@@ -1,11 +1,11 @@
-import IDepartment from '../department/department.interface';
-import { Document } from 'mongoose';
+import { IDepartment } from '../department/department.interface';
 
-export default interface IQualification extends Document {
-  qualificationId: string;
-  name: string;
-  type: string;
-  departmentId: string;
+export interface IQualification {
+  _id?: string;
+  qualificationId?: string;
+  name?: string;
+  type?: string;
+  departmentId?: string;
   department?: IDepartment;
   createdAt?: Date;
   updatedAt?: Date;

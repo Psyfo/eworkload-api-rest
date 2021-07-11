@@ -16,6 +16,9 @@ const blockSchema = new mongoose.Schema(
     description: {
       type: String
     },
+    weeks: {
+      type: Number
+    },
     createdAt: {
       type: Date
     },

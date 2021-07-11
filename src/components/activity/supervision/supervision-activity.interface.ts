@@ -1,12 +1,12 @@
-import IStudent from '../../student/student.interface';
+import { IStudent } from '../../student/student.interface';
+import { ISupervisionWorkload } from '../../workload/supervision/supervision-workload.interface';
+import { IActivity } from '../activity.interface';
 
-import IActivity from '../activity.interface';
-import { Document } from 'mongoose';
-
-export default interface ISupervisionActivity extends IActivity, Document {
-  supervisionRole: string;
-  split: number;
-  studentId: string;
+export interface ISupervisionActivity extends IActivity {
+  supervisionRole?: string;
+  split?: number;
+  studentId?: string;
   student?: IStudent;
-  year: string;
+  year?: string;
+  workload?: ISupervisionWorkload;
 }

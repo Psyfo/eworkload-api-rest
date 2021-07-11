@@ -48,6 +48,14 @@ const communityInstructionWorkloadSchema = new mongoose.Schema({
     type: Number,
     default: 0
   }
+},{
+  timestamps: true,
+  toJSON: {
+    virtuals: true
+  },
+  toObject: {
+    virtuals: true
+  }
 });
 
 // HOOKS

@@ -1,8 +1,7 @@
-import { Document } from 'mongoose';
-
-export default interface IDuty extends Document {
-  dutyId: string;
-  name: string;
+export interface IDuty {
+  _id?: string;
+  dutyId?: string;
+  name?: string;
   description?: string;
   createdAt?: Date;
   updatedAt?: Date;

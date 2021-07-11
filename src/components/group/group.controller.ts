@@ -1,72 +1,21 @@
 import { NextFunction, Request, Response } from 'express';
-import mongoose, { model } from 'mongoose';
+import mongoose from 'mongoose';
 
 import { logger } from '../../config/logger.config';
-import IGroup from './group.interface';
-import IModule from '../module/module.interface';
+import { IGroup } from './group.interface';
 import Group from './group.model';
-import ModuleController from '../module/module.controller';
-
-class GroupControl {
-  // public static async group(id: string) {
-  //   return await Group.findOne({ _id: id }).populate('module');
-  // }
-  // public static async groups() {
-  //   return await Group.find({}).populate('module');
-  // }
-  // public static async groupsByModule(moduleId: string) {
-  //   return await Group.find({ moduleId: moduleId }).populate('module');
-  // }
-  // public static async groupTotal(moduleId: string) {
-  //   const groups: IGroup[] = (await this.groupsByModule(moduleId)) as IGroup[];
-  //   let total = 0;
-  //   for (let group of groups) {
-  //     total += group.studentsEnrolled;
-  //   }
-  //   return total;
-  // }
-  // public static async remainingStudents(moduleId: string) {
-  //   const module: IModule = (await ModuleController.module(moduleId)) as IModule;
-  //   const groupTotal: number = await this.groupTotal(moduleId);
-  //   const remaining: number = module.studentsEnrolled - groupTotal;
-  //   return remaining;
-  // }
-  // public static async groupExists(groupId: string, moduleId: string) {
-  //   const count = await Group.count({ groupId: groupId, moduleId: moduleId });
-  //   if (count !== 0) {
-  //     return true;
-  //   }
-  //   return false;
-  // }
-  // public static async createGroup(group: IGroup) {
-  //   return await new Group(group).save();
-  // }
-  // public static async updateGroup(group: IGroup) {
-  //   return await Group.findOneAndUpdate(
-  //     {
-  //       _id: group.id
-  //     },
-  //     {
-  //       $set: {
-  //         group
-  //       }
-  //     },
-  //     { upsert: true }
-  //   );
-  // }
-  // public static async deleteGroup(group: IGroup) {
-  //   return await Group.findOneAndRemove({ _id: group.id });
-  // }
-}
 
 const GroupController = {
   async all(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = await Group.find();
+      const result = await Group.find().populate({
+        path: 'module',
+        populate: [{ path: 'block' }, { path: 'discipline' }, { path: 'qualification' }, { path: 'offering-type' }]
+      });
       if (!result) {
         return res.status(400).json({ message: 'No result found' });
       }
-      logger.info('Request successful');
+
       return res.status(200).json(result);
     } catch (error) {
       logger.error(error.message);
@@ -75,11 +24,14 @@ const GroupController = {
   },
   async byId(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = await Group.findOne({ _id: req.params._id });
+      const result = await Group.findOne({ _id: req.params._id }).populate({
+        path: 'module',
+        populate: [{ path: 'block' }, { path: 'discipline' }, { path: 'qualification' }, { path: 'offering-type' }]
+      });
       if (!result) {
         return res.status(400).json({ message: 'No result found' });
       }
-      logger.info('Request successful');
+
       return res.status(200).json(result);
     } catch (error) {
       logger.error(error.message);
@@ -88,11 +40,14 @@ const GroupController = {
   },
   async byModuleId(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = await Group.findOne({ moduleId: req.params.moduleId });
+      const result = await Group.find({ moduleId: req.params.moduleId }).populate({
+        path: 'module',
+        populate: [{ path: 'block' }, { path: 'discipline' }, { path: 'qualification' }, { path: 'offering-type' }]
+      });
       if (!result) {
         return res.status(400).json({ message: 'No result found' });
       }
-      logger.info('Request successful');
+
       return res.status(200).json(result);
     } catch (error) {
       logger.error(error.message);
@@ -104,7 +59,10 @@ const GroupController = {
   async create(req: Request, res: Response, next: NextFunction) {
     try {
       const newGroup: IGroup = await new Group(req.body).save();
-      const result = await Group.findOne({ _id: newGroup._id });
+      const result = await Group.findOne({ _id: newGroup._id }).populate({
+        path: 'module',
+        populate: [{ path: 'block' }, { path: 'discipline' }, { path: 'qualification' }, { path: 'offering-type' }]
+      });
       logger.info('Object created');
       return res.status(200).json(result);
     } catch (error) {
@@ -120,7 +78,10 @@ const GroupController = {
           $set: req.body
         },
         { upsert: true }
-      );
+      ).populate({
+        path: 'module',
+        populate: [{ path: 'block' }, { path: 'discipline' }, { path: 'qualification' }, { path: 'offering-type' }]
+      });
       if (!result) {
         return res.status(400).json({ message: 'No result found' });
       }
@@ -133,7 +94,10 @@ const GroupController = {
   },
   async delete(req: Request, res: Response, next: NextFunction) {
     try {
-      const result: IGroup = await Group.findByIdAndDelete(mongoose.Types.ObjectId(req.body._id));
+      const result: IGroup = await Group.findByIdAndDelete(mongoose.Types.ObjectId(req.body._id)).populate({
+        path: 'module',
+        populate: [{ path: 'block' }, { path: 'discipline' }, { path: 'qualification' }, { path: 'offering-type' }]
+      });
       if (!result) {
         return res.status(400).json({ message: 'No result found' });
       }

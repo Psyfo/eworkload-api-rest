@@ -20,7 +20,6 @@ const studentSchema = new mongoose.Schema(
     },
     email: {
       type: String,
-      required: true,
       unique: true,
       lowercase: true
     },
@@ -31,7 +30,6 @@ const studentSchema = new mongoose.Schema(
     },
     title: {
       type: String,
-      required: true,
       trim: true
     },
     graduationDate: {

@@ -1,25 +1,25 @@
-import IDepartment from '../department/department.interface';
-import IDiscipline from '../discipline/discipline.interface';
-import IPosition from '../position/position.interface';
-import IWorkFocus from '../work-focus/work-focus.interface';
-import { Document } from 'mongoose';
+import { IDepartment } from '../department/department.interface';
+import { IDiscipline } from '../discipline/discipline.interface';
+import { IPosition } from '../position/position.interface';
+import { IWorkFocus } from '../work-focus/work-focus.interface';
 
-export default interface IUser extends Document {
-  userId: string;
-  password: string;
-  email: string;
-  firstName: string;
-  lastName: string;
+export interface IUser {
+  _id?: string;
+  userId?: string;
+  password?: string;
+  email?: string;
+  firstName?: string;
+  lastName?: string;
   photoUrl?: string;
   disciplineIds?: string[];
   disciplines?: IDiscipline[];
-  positionId: string;
+  positionId?: string;
   position?: IPosition;
-  departmentId: string;
+  departmentId?: string;
   department?: IDepartment;
   gender?: string;
   nationality?: string;
-  workFocusName: string;
+  workFocusName?: string;
   workFocus?: IWorkFocus;
   createdAt?: Date;
   updatedAt?: Date;

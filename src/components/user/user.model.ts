@@ -1,5 +1,5 @@
 import bcrypt from 'bcryptjs';
-import IUser from './user.interface';
+import { IUser } from './user.interface';
 import mongoose from 'mongoose';
 import validator from 'validator';
 
@@ -18,12 +18,7 @@ const userSchema = new mongoose.Schema(
     },
     email: {
       type: String,
-      required: true,
-      unique: true,
-      lowercase: true,
-      validate: (value: any) => {
-        return validator.isEmail(value);
-      }
+      lowercase: true
     },
     firstName: {
       type: String
@@ -67,7 +62,13 @@ const userSchema = new mongoose.Schema(
     }
   },
   {
-    timestamps: true
+    timestamps: true,
+    toJSON: {
+      virtuals: true
+    },
+    toObject: {
+      virtuals: true
+    }
   }
 );
 
@@ -92,43 +93,44 @@ userSchema.virtual('workFocus', {
 userSchema.virtual('department', {
   ref: 'Department',
   localField: 'departmentId',
-  foreignField: '_id',
+  foreignField: 'departmentId',
   justOne: true
 });
-userSchema.virtual('full').get(function (this: any) {
-  return (
-    this.userId +
-    '.' +
-    this.email +
-    '.' +
-    this.firstName +
-    '.' +
-    this.lastName +
-    '.' +
-    this.photoUrl +
-    '.' +
-    this.workFocusName +
-    '.' +
-    this.disciplineId +
-    '.' +
-    this.positionId +
-    '.' +
-    this.gender +
-    '.' +
-    this.nationality
-  );
-});
+// userSchema.virtual('full').get(function (this: any) {
+//   return (
+//     this.userId +
+//     '.' +
+//     this.email +
+//     '.' +
+//     this.firstName +
+//     '.' +
+//     this.lastName +
+//     '.' +
+//     this.photoUrl +
+//     '.' +
+//     this.workFocusName +
+//     '.' +
+//     this.disciplineId +
+//     '.' +
+//     this.positionId +
+//     '.' +
+//     this.gender +
+//     '.' +
+//     this.nationality
+//   );
+// });
 
 // HOOKS
 // Pre-hook to hash password. Make sure to use function and not arrow (lexical 'this' problem)
 userSchema.pre('save', async function () {
-  const user: IUser = this as IUser;
+  const user: any = this;
 
   // Generate default Work Focus
   user.workFocusName = 'Balanced';
 
   // Generate random password
-  user.password = Math.random().toString(36).slice(-8);
+  // user.password = Math.random().toString(36).slice(-8);
+  user.password = 'Password01';
   logger.info(user.password);
 
   // Prepare and send user account mail
@@ -158,7 +160,7 @@ userSchema.pre('save', async function () {
   user.password = hash;
 
   // Initialize workloads
-  await WorkloadController.initializeWorkloads(user.userId);
+  // await WorkloadController.initializeWorkloads(user.userId);
 });
 
 // INSTANCE METHODS

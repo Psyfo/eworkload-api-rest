@@ -17,6 +17,14 @@ const communityInstructionActivitySchema = new mongoose.Schema({
   evidence: {
     type: String
   }
+},{
+  timestamps: true,
+  toJSON: {
+    virtuals: true
+  },
+  toObject: {
+    virtuals: true
+  }
 });
 
 // HOOKS

@@ -12,7 +12,7 @@ const FacultyController = {
       if (!result) {
         return res.status(400).json({ message: 'No result found' });
       }
-      logger.info('Request successful');
+      
       return res.status(200).json(result);
     } catch (error) {
       logger.error(error.message);
@@ -25,7 +25,7 @@ const FacultyController = {
       if (!result) {
         return res.status(400).json({ message: 'No result found' });
       }
-      logger.info('Request successful');
+      
       return res.status(200).json(result);
     } catch (error) {
       logger.error(error.message);

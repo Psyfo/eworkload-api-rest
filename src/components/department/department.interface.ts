@@ -1,8 +1,7 @@
 import IFaculty from '../faculty/faculty.interface';
-import IUser from '../user/user.interface';
-import { Document } from 'mongoose';
 
-export default interface IDepartment extends Document {
+export interface IDepartment {
+  _id?: string;
   departmentId: string;
   name: string;
   facultyId: string;
@@ -10,5 +9,4 @@ export default interface IDepartment extends Document {
   hodId?: string;
   createdAt?: Date;
   updatedAt?: Date;
-
 }

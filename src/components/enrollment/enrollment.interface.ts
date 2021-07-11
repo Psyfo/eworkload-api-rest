@@ -1,9 +1,9 @@
 import { Document } from 'mongoose';
 
-import IQualification from '../qualification/qualification.interface';
+import { IQualification } from '../qualification/qualification.interface';
 
 export default interface IEnrollment extends Document {
-  id: string;
+  _id: string;
   enrollmentYear: string;
   qualificationId: string;
   qualification?: IQualification;

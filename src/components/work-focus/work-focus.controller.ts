@@ -1,55 +1,45 @@
-import IUser from '../user/user.interface';
-import IWorkFocus from './work-focus.interface';
+import { NextFunction, Request, Response } from 'express';
 
 import { logger } from '../../config/logger.config';
 import parameters from '../../config/parameters.config';
-import UserController from '../user/user.controller';
+import { IUser } from '../user/user.interface';
 import User from '../user/user.model';
+import { IWorkFocus } from './work-focus.interface';
 import WorkFocus from './work-focus.model';
 
-export default class WorkFocusController {
-  public static async workFocus(name: string) {
+const WorkFocusController = {
+  async workFocus(name: string) {
     return await WorkFocus.findOne({ name: name });
-  }
-  public static async workFocuses() {
+  },
+  async workFocuses() {
     return await WorkFocus.find({});
-  }
-  public static async teachingHours(userId: string) {
-    const user: IUser = (await User.findOne({ userId: userId }).populate(
-      'work-focus'
-    )) as IUser;
-    const workFocus: IWorkFocus = (await this.workFocus(
-      user.workFocusName
-    )) as IWorkFocus;
+  },
+  async teachingHours(userId: string) {
+    const user: IUser = await User.findOne({ userId: userId }).populate('work-focus');
+    const workFocus: IWorkFocus = (await this.workFocus(user.workFocusName)) as IWorkFocus;
     const teachingFocusPercentage: number = workFocus.teachingRatio;
     return (teachingFocusPercentage / 100) * parameters.annual_total_hours;
-  }
-  public static async researchHours(userId: string) {
-    const user: IUser = (await User.findOne({ userId: userId }).populate(
-      'work-focus'
-    )) as IUser;
-    const workFocus: IWorkFocus = (await this.workFocus(
-      user.workFocusName
-    )) as IWorkFocus;
+  },
+  async researchHours(userId: string) {
+    const user: IUser = await User.findOne({ userId: userId }).populate('work-focus');
+    const workFocus: IWorkFocus = (await this.workFocus(user.workFocusName)) as IWorkFocus;
     const researchFocusPercentage: number = workFocus.researchRatio;
     return (researchFocusPercentage / 100) * parameters.annual_total_hours;
-  }
-  public static async serviceHours(userId: string) {
-    const user: IUser = (await UserController.user(userId)) as IUser;
-    const workFocus: IWorkFocus = (await this.workFocus(
-      user.workFocusName
-    )) as IWorkFocus;
+  },
+  async serviceHours(userId: string) {
+    const user: IUser = await User.findOne({ userId: userId }).populate('work-focus');
+    const workFocus: IWorkFocus = (await this.workFocus(user.workFocusName)) as IWorkFocus;
     const serviceFocusPercentage: number = workFocus.serviceRatio;
 
     return (serviceFocusPercentage / 100) * parameters.annual_total_hours;
-  }
-  public static async annualHours() {
+  },
+  async annualHours() {
     return parameters.annual_total_hours;
-  }
-  public static async createWorkFocus(workFocus: IWorkFocus) {
-    return await workFocus.save();
-  }
-  public static async updateWorkFocus(workFocus: IWorkFocus) {
+  },
+  // async createWorkFocus(workFocus: IWorkFocus) {
+  //   return await workFocus.save();
+  // },
+  async updateWorkFocus(workFocus: IWorkFocus) {
     return await WorkFocus.findOneAndUpdate(
       { name: workFocus.name },
       {
@@ -57,8 +47,62 @@ export default class WorkFocusController {
       },
       { upsert: true }
     );
+  },
+  async deleteWorkFocus(workFocus: IWorkFocus) {
+    return await WorkFocus.findOneAndRemove({ _id: workFocus._id });
+  },
+  async all(req: Request, res: Response, next: NextFunction) {
+    try {
+      const result = await WorkFocus.find({});
+      if (!result) {
+        return res.status(400).json({ message: 'No result found' });
+      }
+      return res.status(200).json(result);
+    } catch (error) {
+      logger.error(error.message);
+      return res.status(500).send('Server Error');
+    }
+  },
+  async byId(req: Request, res: Response, next: NextFunction) {
+    try {
+      const result: IWorkFocus = await WorkFocus.findOne({ _id: req.params._id });
+      if (!result) {
+        return res.status(400).json({ message: 'No result found' });
+      }
+      return res.status(200).json(result);
+    } catch (error) {
+      logger.error(error.message);
+      return res.status(500).send('Server Error');
+    }
+  },
+  async create(req: Request, res: Response, next: NextFunction) {
+    try {
+      const newWorkFocus: IWorkFocus = await new WorkFocus(req.body).save();
+      const result = await WorkFocus.findOne({ _id: newWorkFocus._id });
+      return res.status(200).json(result);
+    } catch (error) {
+      logger.error(error.message);
+      return res.status(500).send('Server Error');
+    }
+  },
+  async update(req: Request, res: Response, next: NextFunction) {
+    try {
+      const result = await WorkFocus.findOneAndUpdate({ _id: req.body._id }, { $set: req.body }, { upsert: true });
+      return res.status(200).json(result);
+    } catch (error) {
+      logger.error(error.message);
+      return res.status(500).send('Server Error');
+    }
+  },
+  async delete(req: Request, res: Response, next: NextFunction) {
+    try {
+      const result = await WorkFocus.findOneAndRemove({ _id: req.body._id });
+      return res.status(200).json(result);
+    } catch (error) {
+      logger.error(error.message);
+      return res.status(500).send('Server Error');
+    }
   }
-  public static async deleteWorkFocus(workFocus: IWorkFocus) {
-    return await WorkFocus.findOneAndRemove({_id: workFocus.id});
-  }
-}
+};
+
+export default WorkFocusController;

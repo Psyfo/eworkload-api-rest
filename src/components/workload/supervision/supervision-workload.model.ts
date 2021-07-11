@@ -63,6 +63,12 @@ supervisionWorkloadSchema.virtual('supervision-activity', {
   foreignField: 'activityId',
   justOne: true
 });
+supervisionWorkloadSchema.virtual('supervision-activity', {
+  ref: 'SupervisionActivity',
+  localField: 'activityId',
+  foreignField: 'activityId',
+  justOne: true
+});
 
 const SupervisionWorkload = mongoose.model(
   'SupervisionWorkload',

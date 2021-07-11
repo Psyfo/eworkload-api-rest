@@ -1,10 +1,10 @@
-import IGroup from '../../group/group.interface';
-import { Document } from 'mongoose';
+import { IGroup } from '../../group/group.interface';
+import { IActivity } from '../activity.interface';
+import { IFormalInstructionWorkload } from './../../workload/formal-instruction/formal-instruction-workload.interface';
 
-import IActivity from '../activity.interface';
-
-export default interface IFormalInstructionActivity extends IActivity, Document {
+export interface IFormalInstructionActivity extends IActivity {
   groupId?: string;
   group?: IGroup;
-  isCoordinator?: boolean;
+  coordinatorId?: string;
+  workload?: IFormalInstructionWorkload;
 }

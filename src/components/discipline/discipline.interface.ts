@@ -1,8 +1,7 @@
-import { Document } from 'mongoose';
-
-export default interface IDiscipline extends Document {
-  disciplineId: string;
-  name: string;
+export interface IDiscipline {
+  _id?: string;
+  disciplineId?: string;
+  name?: string;
   description?: string;
   createdAt?: Date;
   updatedAt?: Date;

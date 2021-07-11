@@ -18,6 +18,14 @@ const qualificationSchema = new mongoose.Schema(
       required: true,
       trim: true
     },
+    nqfLevel: {
+      type: String,
+      trim: true
+    },
+    credits: {
+      type: String,
+      trim: true
+    },
     departmentId: {
       type: String,
       trim: true,

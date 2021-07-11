@@ -1,333 +1,391 @@
-import IFormalInstructionActivity from './formal-instruction-activity.interface';
+import { NextFunction, Request, Response } from 'express';
+import mongoose from 'mongoose';
 
 import { logger } from '../../../config/logger.config';
-import parameters from '../../../config/parameters.config';
-import GroupController from '../../group/group.controller';
-import IGroup from '../../group/group.interface';
-import FormalInstructionActivity from './formal-instruction-activity.model';
+import { IGroup } from '../../group/group.interface';
+import Group from '../../group/group.model';
+import { IModule } from '../../module/module.interface';
+import Module from '../../module/module.model';
 import WorkFocusController from '../../work-focus/work-focus.controller';
-import WorkloadController from '../../workload/workload.controller';
+import { IFormalInstructionWorkload } from '../../workload/formal-instruction/formal-instruction-workload.interface';
+import { IFormalInstructionActivity } from './formal-instruction-activity.interface';
+import FormalInstructionActivity from './formal-instruction-activity.model';
 
-export default class FormalInstructionActivityController {
-  year: string = new Date().getFullYear().toString();
-
-  public static async formalInstructionActivity(activityId: string) {
-    return await FormalInstructionActivity.findOne({ activityId: activityId })
-      .populate({
-        path: 'user',
-        model: 'User',
-        populate: [
-          { path: 'disciplines', model: 'Discipline' },
-          { path: 'position', model: 'Position' },
-          { path: 'workFocus', model: 'WorkFocus' }
-        ]
-      })
-      .populate('duty')
-      .populate({
-        path: 'group',
-        populate: {
-          path: 'module',
-          populate: [{ path: 'block' }, { path: 'offeringType' }, { path: 'qualification' }, { path: 'discipline' }]
-        }
-      });
-  }
-  public static async formalInstructionActivities() {
-    return await FormalInstructionActivity.find({})
-      .populate({
-        path: 'user',
-        model: 'User',
-        populate: [
-          { path: 'disciplines', model: 'Discipline' },
-          { path: 'position', model: 'Position' },
-          { path: 'workFocus', model: 'WorkFocus' }
-        ]
-      })
-      .populate('duty')
-      .populate({
-        path: 'group',
-        populate: {
-          path: 'module',
+const FormalInstructionActivityController = {
+  async all(req: Request, res: Response, next: NextFunction) {
+    try {
+      const result = await FormalInstructionActivity.find({})
+        .populate({
+          path: 'user',
+          model: 'User',
           populate: [
-            { path: 'block' },
-            { path: 'offeringType' },
-            { path: 'qualification' },
-            { path: 'discipline' },
-            { path: 'venue' }
+            { path: 'disciplines', model: 'Discipline' },
+            { path: 'position', model: 'Position' },
+            { path: 'workFocus', model: 'WorkFocus' },
+            { path: 'department', model: 'Department' }
           ]
-        }
-      });
-  }
-  public static async formalInstructionActivitiesByUser(userId: string) {
-    return await FormalInstructionActivity.find({ userId: userId })
-      .populate({
-        path: 'user',
-        model: 'User',
-        populate: [
-          { path: 'disciplines', model: 'Discipline' },
-          { path: 'position', model: 'Position' },
-          { path: 'workFocus', model: 'WorkFocus' },
-          { path: 'department', model: 'Department' }
-        ]
-      })
-      .populate('duty')
-      .populate({
-        path: 'group',
-        populate: {
-          path: 'module',
-          populate: [
-            { path: 'block' },
-            { path: 'offeringType' },
-            { path: 'qualification' },
-            { path: 'discipline' },
-            { path: 'venue' }
-          ]
-        }
-      });
-  }
-  public static async formalInstructionActivitiesByGroup(groupId: string) {
-    return await FormalInstructionActivity.find({ groupId: groupId })
-      .populate({
-        path: 'user',
-        model: 'User',
-        populate: [
-          { path: 'disciplines', model: 'Discipline' },
-          { path: 'position', model: 'Position' },
-          { path: 'workFocus', model: 'WorkFocus' }
-        ]
-      })
-      .populate('duty')
-      .populate({
-        path: 'group',
-        populate: {
-          path: 'module',
-          populate: [
-            { path: 'block' },
-            { path: 'offeringType' },
-            { path: 'qualification' },
-            { path: 'discipline' },
-            { path: 'venue' }
-          ]
-        }
-      });
-  }
-  public static async createFormalInstructionActivity(activity: IFormalInstructionActivity) {
-    return await new FormalInstructionActivity(activity).save();
-  }
-  public static async updateFormalInstructionActivity(activity: IFormalInstructionActivity) {
-    return await FormalInstructionActivity.findOneAndUpdate(
-      { activityId: activity.activityId },
-      {
-        $set: activity
-      },
-      { upsert: true }
-    );
-  }
-  public static async deleteFormalInstructionActivity(activity: any) {
-    return await FormalInstructionActivity.findOneAndRemove(activity);
-  }
-  public static async formalInstructionLectureWeeks(activityId: string) {
-    const activity: IFormalInstructionActivity = (await this.formalInstructionActivity(
-      activityId
-    )) as IFormalInstructionActivity;
-    let lectureWeeks = parameters.lecture_weeks_semester;
-    if (activity.group.module.blockId === parameters.annual) {
-      lectureWeeks = parameters.lecture_weeks_annual;
-    }
-
-    return lectureWeeks;
-  }
-  public static async formalInstructionStudentsEnrolled(activityId: string) {
-    const activity: IFormalInstructionActivity = (await this.formalInstructionActivity(
-      activityId
-    )) as IFormalInstructionActivity;
-
-    const students = activity.group.studentsEnrolled;
-    return students;
-  }
-  public static async formalInstructionBaseContactHours(activityId: string) {
-    const activity: IFormalInstructionActivity = (await this.formalInstructionActivity(
-      activityId
-    )) as IFormalInstructionActivity;
-    const lectureWeeks: number = await this.formalInstructionLectureWeeks(activityId);
-    return (activity.group.module.credits / 4) * lectureWeeks; // * activity.group.repeat) / activity.group.modularity;
-  }
-  public static async formalInstructionCoordinationHours(activityId: string) {
-    const activity: IFormalInstructionActivity = (await this.formalInstructionActivity(
-      activityId
-    )) as IFormalInstructionActivity;
-    const students: number = await this.formalInstructionStudentsEnrolled(activityId);
-    let coordination: number = 0;
-    if (activity.isCoordinator) {
-      coordination = 5;
-      if (students > 100) {
-        coordination += (students - 100) / 40;
+        })
+        .populate('duty')
+        .populate({
+          path: 'group',
+          populate: {
+            path: 'module',
+            populate: [
+              { path: 'block' },
+              { path: 'offeringType' },
+              { path: 'qualification' },
+              { path: 'discipline' },
+              { path: 'venue' }
+            ]
+          }
+        });
+      if (!result) {
+        return res.status(400).json({ message: 'No result found' });
       }
+      
+
+      logger.info('Request successful');
+      return res.status(200).json(result);
+    } catch (error) {
+      logger.error(error.message);
+      return res.status(500).json({ message: 'Server Error' });
     }
-    return coordination;
-  }
-  public static async formalInstructionStudentSupportHours(activityId: string) {
-    const activity: IFormalInstructionActivity = (await this.formalInstructionActivity(
-      activityId
-    )) as IFormalInstructionActivity;
-    const students: number = await this.formalInstructionStudentsEnrolled(activityId);
-    const lectureWeeks: number = await this.formalInstructionLectureWeeks(activityId);
-    return (0.1 * students * activity.group.module.credits) / lectureWeeks / activity.group.modularity;
-  }
-  public static async formalInstructionPreparationTimeHours(activityId: string) {
-    const activity: IFormalInstructionActivity = (await this.formalInstructionActivity(
-      activityId
-    )) as IFormalInstructionActivity;
-    const baseContactHours: number = await this.formalInstructionBaseContactHours(activityId);
-    return (baseContactHours * (activity.group.module.nqfLevel - 4)) / activity.group.modularity;
-  }
-  public static async formalInstructionAssessmentSettingHours(activityId: string) {
-    const activity: IFormalInstructionActivity = (await this.formalInstructionActivity(
-      activityId
-    )) as IFormalInstructionActivity;
-    const lectureWeeks: number = await this.formalInstructionLectureWeeks(activityId);
+  },
+  async byId(req: Request, res: Response, next: NextFunction) {
+    try {
+      const result = await FormalInstructionActivity.findOne({ _id: mongoose.Types.ObjectId(req.params._id) })
+        .populate('user')
+        .populate('duty')
+        .populate({
+          path: 'group',
+          model: 'Group',
+          populate: [
+            {
+              path: 'module',
+              model: 'Module',
+              populate: [
+                { path: 'block' },
+                { path: 'offeringType' },
+                { path: 'qualification' },
+                { path: 'discipline' },
+                { path: 'venue' }
+              ]
+            }
+          ]
+        });
+      if (!result) {
+        return res.status(400).json({ message: 'No result found' });
+      }
+      //FormalInstructionActivityController.calcWorkload(result._id);
+      logger.info('Request successful');
+      return res.status(200).json(result);
+    } catch (error) {
+      logger.error(error.message);
+      return res.status(500).json({ message: 'Server Error' });
+    }
+  },
+  async byUserId(req: Request, res: Response, next: NextFunction) {
+    try {
+      const result = await FormalInstructionActivity.find({ userId: req.params.userId })
+        .populate({
+          path: 'user',
+          model: 'User',
+          populate: [
+            { path: 'disciplines', model: 'Discipline' },
+            { path: 'position', model: 'Position' },
+            { path: 'workFocus', model: 'WorkFocus' },
+            { path: 'department', model: 'Department' }
+          ]
+        })
+        .populate('duty')
+        .populate({
+          path: 'group',
+          populate: {
+            path: 'module',
+            populate: [
+              { path: 'block' },
+              { path: 'offeringType' },
+              { path: 'qualification' },
+              { path: 'discipline' },
+              { path: 'venue' }
+            ]
+          }
+        });
+      if (!result) {
+        return res.status(400).json({ message: 'No result found' });
+      }
+      logger.info('Request successful');
+      return res.status(200).json(result);
+    } catch (error) {
+      logger.error(error.message);
+      return res.status(500).json({ message: 'Server Error' });
+    }
+  },
+  async create(req: Request, res: Response, next: NextFunction) {
+    try {
+      const newFormalInstructionActivity = await new FormalInstructionActivity(req.body).save();
+      const result: IFormalInstructionActivity = await FormalInstructionActivity.findOne({
+        _id: newFormalInstructionActivity._id
+      })
+        .populate({
+          path: 'user',
+          model: 'User',
+          populate: [
+            { path: 'disciplines', model: 'Discipline' },
+            { path: 'position', model: 'Position' },
+            { path: 'workFocus', model: 'WorkFocus' },
+            { path: 'department', model: 'Department' }
+          ]
+        })
+        .populate('duty')
+        .populate({
+          path: 'group',
+          populate: {
+            path: 'module',
+            populate: [
+              { path: 'formalInstructionActivity' },
+              { path: 'offeringType' },
+              { path: 'qualification' },
+              { path: 'discipline' },
+              { path: 'venue' }
+            ]
+          }
+        });
+      logger.info('Object created');
+      //update workload
+      //await FormalInstructionActivityController.calcWorkload(result._id);
+
+      return res.status(200).json(result);
+    } catch (error) {
+      logger.error(error.message);
+      return res.status(500).json({ message: 'Server Error' });
+    }
+  },
+  async update(req: Request, res: Response, next: NextFunction) {
+    try {
+      const result = await FormalInstructionActivity.findByIdAndUpdate(
+        { _id: mongoose.Types.ObjectId(req.body._id) },
+        {
+          $set: req.body
+        },
+        { upsert: true }
+      )
+        .populate({
+          path: 'user',
+          model: 'User',
+          populate: [
+            { path: 'disciplines', model: 'Discipline' },
+            { path: 'position', model: 'Position' },
+            { path: 'workFocus', model: 'WorkFocus' },
+            { path: 'department', model: 'Department' }
+          ]
+        })
+        .populate('duty')
+        .populate({
+          path: 'group',
+          populate: {
+            path: 'module',
+            populate: [
+              { path: 'formalInstructionActivity' },
+              { path: 'offeringType' },
+              { path: 'qualification' },
+              { path: 'discipline' },
+              { path: 'venue' }
+            ]
+          }
+        });
+      if (!result) {
+        return res.status(400).json({ message: 'No result found' });
+      }
+      // update workload
+      //await this.calcWorkload(result._id);
+      logger.info('Object updated');
+      return res.status(200).json(result);
+    } catch (error) {
+      logger.error(error.message);
+      return res.status(500).json({ message: 'Server Error' });
+    }
+  },
+  async delete(req: Request, res: Response, next: NextFunction) {
+    try {
+      const result = await FormalInstructionActivity.findByIdAndDelete(mongoose.Types.ObjectId(req.body._id))
+        .populate({
+          path: 'user',
+          model: 'User',
+          populate: [
+            { path: 'disciplines', model: 'Discipline' },
+            { path: 'position', model: 'Position' },
+            { path: 'workFocus', model: 'WorkFocus' },
+            { path: 'department', model: 'Department' }
+          ]
+        })
+        .populate('duty')
+        .populate({
+          path: 'group',
+          populate: {
+            path: 'module',
+            populate: [
+              { path: 'formalInstructionActivity' },
+              { path: 'offeringType' },
+              { path: 'qualification' },
+              { path: 'discipline' },
+              { path: 'venue' }
+            ]
+          }
+        });
+      if (!result) {
+        return res.status(400).json({ message: 'No result found' });
+      }
+      logger.info('Object deleted');
+      return res.status(200).json(result);
+    } catch (error) {
+      logger.error(error.message);
+      return res.status(500).json({ message: 'Server Error' });
+    }
+  },
+  async baseContact(activity: any) {
+    try {
+      return (activity.group.module.credits / 4) * activity.group.module.block.weeks;
+    } catch (error) {
+      logger.error(error.message);
+    }
+  },
+  async coordination(activity: any) {
+    try {
+      let coordination = 0;
+      if (activity.userId === activity.group.module.coordinatorId) {
+        coordination = 5;
+        coordination += (activity.group.studentsEnrolled - 100) / 40;
+      }
+      return coordination;
+    } catch (error) {
+      logger.error(error.message);
+    }
+  },
+  async studentSupport(activity: any) {
+    try {
+      return (
+        (0.1 * activity.group.studentsEnrolled * activity.group.module.credits) /
+        activity.group.module.block.weeks /
+        activity.group.modularity
+      );
+    } catch (error) {
+      logger.error(error.message);
+    }
+  },
+  async preparationTime(activity: any) {
+    try {
+      return ((await this.baseContact(activity)) * (activity.group.module.nqfLevel - 4)) / activity.group.modularity;
+    } catch (error) {
+      logger.error(error.message);
+    }
+  },
+  async assessmentSetting(activity: any) {
+    try {
+      return (
+        (((10 * activity.group.module.credits) / activity.group.module.block.weeks) *
+          (activity.group.module.nqfLevel - 4)) /
+        activity.group.modularity
+      );
+    } catch (error) {
+      logger.error(error.message);
+    }
+  },
+  async examMarking(activity: any) {
     return (
-      (((10 * activity.group.module.credits) / lectureWeeks) * (activity.group.module.nqfLevel - 4)) /
-      activity.group.modularity
-    );
-  }
-  public static async formalInstructionExamMarkingHours(activityId: string) {
-    const activity: IFormalInstructionActivity = (await this.formalInstructionActivity(
-      activityId
-    )) as IFormalInstructionActivity;
-    const students: number = await this.formalInstructionStudentsEnrolled(activityId);
-    const lectureWeeks: number = await this.formalInstructionLectureWeeks(activityId);
-    return (
-      (0.25 * students * (activity.group.module.credits / lectureWeeks) * (activity.group.module.nqfLevel - 4)) /
+      (0.25 *
+        activity.group.studentsEnrolled *
+        (activity.group.module.credits / activity.group.module.block.weeks) *
+        (activity.group.module.nqfLevel - 4)) /
       2 /
       activity.group.modularity
     );
-  }
-  public static async formalInstructionCourseworkMarkingHours(activityId: string) {
-    const activity: IFormalInstructionActivity = (await this.formalInstructionActivity(
-      activityId
-    )) as IFormalInstructionActivity;
-    const students: number = await this.formalInstructionStudentsEnrolled(activityId);
-    const lectureWeeks: number = await this.formalInstructionLectureWeeks(activityId);
-    return (0.5 * students * (activity.group.module.credits / lectureWeeks)) / activity.group.modularity;
-  }
-  public static async formalInstructionFeedbackHours(activityId: string) {
-    const activity: IFormalInstructionActivity = (await this.formalInstructionActivity(
-      activityId
-    )) as IFormalInstructionActivity;
-    const students: number = await this.formalInstructionStudentsEnrolled(activityId);
-    const lectureWeeks: number = await this.formalInstructionLectureWeeks(activityId);
-    return (1 * students * (activity.group.module.credits / lectureWeeks)) / activity.group.modularity;
-  }
-  public static async formalInstructionFormativeAssessmentHours(activityId: string) {
-    const activity: IFormalInstructionActivity = (await this.formalInstructionActivity(
-      activityId
-    )) as IFormalInstructionActivity;
-    const students: number = await this.formalInstructionStudentsEnrolled(activityId);
-    const lectureWeeks: number = await this.formalInstructionLectureWeeks(activityId);
-    return (0.4 * students * (activity.group.module.credits / lectureWeeks)) / activity.group.modularity;
-  }
-  public static async formalInstructionModerationHours(activityId: string) {
-    // const activity: IFormalInstructionActivity = await this.formalInstructionActivity(activityId) as IFormalInstructionActivity;
-    // const module:IModule = activity.module as IModule;
-    // const students:number = await this.formalInstructionStudentsEnrolled(activityId);
-    // const lectureWeeks:number = await this.formalInstructionLectureWeeks(activityId);
-    // let moderation = 0;
-    // if (activity.userId === module.moderatorId) {
-    //   moderation = Math.round((0.1 * students * module.credits) / lectureWeeks) / activity.group.modularity;
-    // }
-    // return moderation;
-  }
-  public static async formalInstructionOtherHoursPerActivity(activityId: string) {
+  },
+  async courseworkMarking(activity: any) {
     return (
-      (await this.formalInstructionCoordinationHours(activityId)) +
-      (await this.formalInstructionStudentSupportHours(activityId)) +
-      (await this.formalInstructionPreparationTimeHours(activityId)) +
-      (await this.formalInstructionAssessmentSettingHours(activityId)) +
-      (await this.formalInstructionExamMarkingHours(activityId)) +
-      (await this.formalInstructionCourseworkMarkingHours(activityId)) +
-      (await this.formalInstructionFeedbackHours(activityId)) +
-      (await this.formalInstructionFormativeAssessmentHours(activityId))
+      (0.5 * activity!.group!.studentsEnrolled * (activity.group.module.credits / activity.group.module.block.weeks)) /
+      activity.group.modularity
     );
-  }
-  public static async formalInstructionTotalHoursPerActivity(activityId: string) {
+  },
+  async feedback(activity: any) {
     return (
-      (await this.formalInstructionBaseContactHours(activityId)) +
-      (await this.formalInstructionOtherHoursPerActivity(activityId))
+      (1 * activity?.group?.studentsEnrolled * (activity.group.module.credits / activity.group.module.block.weeks)) /
+      activity.group.modularity
     );
-  }
-  public static async formalInstructionTotalHoursPerUser(userId: string) {
-    const activities: IFormalInstructionActivity[] = (await FormalInstructionActivity.find({
-      userId: userId
-    })) as IFormalInstructionActivity[];
-    let activityHours: number = 0;
-    // Cancel if no activities
-    if (!activities) {
-      return activityHours;
+  },
+  async formativeAssessment(activity: any) {
+    return (
+      (0.4 * activity.group.studentsEnrolled * (activity.group.module.credits / activity.group.module.block.weeks)) /
+      activity.group.modularity
+    );
+  },
+  async moderation(activity: any) {},
+  async otherHours(activity: any) {
+    try {
+      return await ((await this.coordination(activity)) +
+        (await this.studentSupport(activity)) +
+        (await this.preparationTime(activity)) +
+        (await this.assessmentSetting(activity)) +
+        (await this.examMarking(activity)) +
+        (await this.courseworkMarking(activity)) +
+        (await this.feedback(activity)) +
+        (await this.formativeAssessment(activity)));
+    } catch (error) {
+      logger.error(error.message);
     }
-    for (let activity of activities) {
-      activityHours += await this.formalInstructionTotalHoursPerActivity(activity.activityId);
+  },
+  async totalHours(activity: any) {
+    return (await this.baseContact(activity)) + (await this.otherHours(activity));
+  },
+  async percentageOfTeaching(activity: any) {
+    return (await this.totalHours(activity)) / (await WorkFocusController.teachingHours(activity.userId));
+  },
+  async percentageOfAnnual(activity: any) {
+    return (await this.totalHours(activity)) / (await WorkFocusController.annualHours());
+  },
+  async calcWorkload(activity: any, user: any, group: any, module: any) {
+    try {
+      // Use activity to calculate workload
+      // const activity: IFormalInstructionActivity = await FormalInstructionActivity.findOne({
+      //   _id: mongoose.Types.ObjectId(_id)
+      // });
+      // const group: IGroup = await Group.findOne({ _id: activity.groupId });
+      // const module: IModule = await Module.findOne({ _id: group.moduleId });
+
+      // if (!activity) {
+      //   logger.error('Activity not found');
+      // }
+      const workload: IFormalInstructionWorkload = {
+        baseContact: await FormalInstructionActivityController.baseContact(activity),
+        coordination: await FormalInstructionActivityController.coordination(activity),
+        studentSupport: await FormalInstructionActivityController.studentSupport(activity),
+        preparationTime: await FormalInstructionActivityController.preparationTime(activity),
+        assessmentSetting: await FormalInstructionActivityController.assessmentSetting(activity),
+        examMarking: await FormalInstructionActivityController.examMarking(activity),
+        courseworkMarking: await FormalInstructionActivityController.courseworkMarking(activity),
+        feedback: await FormalInstructionActivityController.feedback(activity),
+        formativeAssessment: await FormalInstructionActivityController.formativeAssessment(activity),
+        other: await FormalInstructionActivityController.otherHours(activity),
+        total: await FormalInstructionActivityController.totalHours(activity),
+        percentageOfTeaching: await FormalInstructionActivityController.percentageOfTeaching(activity),
+        percentageOfAnnual: await FormalInstructionActivityController.percentageOfAnnual(activity)
+      };
+
+      // Update activity with workload
+      await FormalInstructionActivity.findByIdAndUpdate(
+        { _id: mongoose.Types.ObjectId(activity._id) },
+        {
+          $set: {
+            workload: workload
+          }
+        },
+        { upsert: true }
+      );
+      logger.info('fi workload updated');
+    } catch (error) {
+      logger.error(error);
     }
-    return activityHours;
   }
-  public static async formalInstructionPercentageOfWorkFocusPerActivity(activityId: string) {
-    const activity: IFormalInstructionActivity = (await this.formalInstructionActivity(
-      activityId
-    )) as IFormalInstructionActivity;
-    const activityHours: number = await this.formalInstructionTotalHoursPerActivity(activityId);
-    const workFocusHours: number = await WorkFocusController.teachingHours(activity.userId);
-    return (activityHours / workFocusHours) * 100;
-  }
-  public static async formalInstructionPercentageOfAnnualHoursPerActivity(activityId: string) {
-    const activityHours: number = await this.formalInstructionTotalHoursPerActivity(activityId);
-    const annualHours = await parameters.annual_total_hours;
-    return (activityHours / annualHours) * 100;
-  }
-  public static async formalInstructionPercentageOfTotalHoursPerActivity(activityId: string) {
-    const activity: IFormalInstructionActivity = (await this.formalInstructionActivity(
-      activityId
-    )) as IFormalInstructionActivity;
-    const activityHours: number = await this.formalInstructionTotalHoursPerActivity(activityId);
-    const totalHours: number = await WorkloadController.totalHoursPerUser(activity.userId);
-    if (totalHours === undefined) {
-      throw new Error('Total hours is undefined');
-    }
-    return (activityHours / totalHours) * 100;
-  }
-  public static async formalInstructionPercentageOfWorkFocusPerUser(userId: string) {
-    const activities: IFormalInstructionActivity[] = (await this.formalInstructionActivitiesByUser(
-      userId
-    )) as IFormalInstructionActivity[];
-    let sum: number = 0;
-    for (let activity of activities) {
-      sum += await this.formalInstructionPercentageOfWorkFocusPerActivity(activity.activityId);
-    }
-    return sum;
-  }
-  public static async formalInstructionPercentageOfAnnualHoursPerUser(userId: string) {
-    const activities: IFormalInstructionActivity[] = (await this.formalInstructionActivitiesByUser(
-      userId
-    )) as IFormalInstructionActivity[];
-    let sum: number = 0;
-    for (let activity of activities) {
-      sum += await this.formalInstructionPercentageOfAnnualHoursPerActivity(activity.activityId);
-    }
-    return sum;
-  }
-  public static async formalInstructionPercentageOfTotalHoursPerUser(userId: string) {
-    const activityHours: number = await this.formalInstructionTotalHoursPerUser(userId);
-    let totalHours: number = await WorkloadController.totalHoursPerUser(userId);
-    if (totalHours === undefined) {
-      throw new Error('Total hours is undefined');
-    }
-    return (activityHours / totalHours) * 100;
-  }
-  public static async isCoordinated(moduleId: string) {
-    const groups: IGroup[] = (await GroupController.groupsByModule(moduleId)) as IGroup[];
-    let coordinator = groups.map(async (group: IGroup) => {
-      const activities: IFormalInstructionActivity[] = (await this.formalInstructionActivitiesByGroup(
-        group.id
-      )) as IFormalInstructionActivity[];
-      return activities.find(activity => {});
-    });
-  }
-}
+};
+
+export default FormalInstructionActivityController;

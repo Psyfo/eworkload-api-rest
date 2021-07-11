@@ -1,21 +1,29 @@
-import mongoose from 'mongoose';
-import bcrypt from 'bcryptjs';
-import { filter } from 'compression';
 import { NextFunction, Request, Response } from 'express';
-import jwt from 'jsonwebtoken';
+import mongoose from 'mongoose';
 
 import { logger } from '../../config/logger.config';
-import IUser from './user.interface';
+import { IUser } from './user.interface';
 import User from './user.model';
 
 const UserController = {
   async all(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = await User.find();
+      const result = await User.find({})
+        .populate('disciplines')
+        .populate({
+          path: 'department',
+          model: 'Department',
+          populate: {
+            path: 'faculty',
+            model: 'Faculty'
+          }
+        })
+        .populate('position')
+        .populate('workFocus');
       if (!result) {
         return res.status(400).json({ message: 'No result found' });
       }
-      logger.info('Request successful');
+
       return res.status(200).json(result);
     } catch (error) {
       logger.error(error.message);
@@ -24,11 +32,22 @@ const UserController = {
   },
   async byId(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = await User.findOne({ _id: req.params._id });
+      const result: IUser = await User.findOne({ _id: req.params._id })
+        .populate('disciplines')
+        .populate({
+          path: 'department',
+          model: 'Department',
+          populate: {
+            path: 'faculty',
+            model: 'Faculty'
+          }
+        })
+        .populate('position')
+        .populate('workFocus');
       if (!result) {
         return res.status(400).json({ message: 'No result found' });
       }
-      logger.info('Request successful');
+
       return res.status(200).json(result);
     } catch (error) {
       logger.error(error.message);
@@ -37,11 +56,21 @@ const UserController = {
   },
   async byUserId(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = await User.findOne({ userId: req.params.userId });
+      const result = await User.findOne({ userId: req.params.userId })
+        .populate('disciplines')
+        .populate({
+          path: 'department',
+          model: 'Department',
+          populate: {
+            path: 'faculty',
+            model: 'Faculty'
+          }
+        })
+        .populate('position')
+        .populate('workFocus');
       if (!result) {
         return res.status(400).json({ message: 'No result found' });
       }
-      logger.info('Request successful');
       return res.status(200).json(result);
     } catch (error) {
       logger.error(error.message);
@@ -50,11 +79,22 @@ const UserController = {
   },
   async byPosition(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = await User.findOne({ positionId: req.params.positionId });
+      const result = await User.findOne({ positionId: req.params.positionId })
+        .populate('disciplines')
+        .populate({
+          path: 'department',
+          model: 'Department',
+          populate: {
+            path: 'faculty',
+            model: 'Faculty'
+          }
+        })
+        .populate('position')
+        .populate('workFocus');
       if (!result) {
         return res.status(400).json({ message: 'No result found' });
       }
-      logger.info('Request successful');
+
       return res.status(200).json(result);
     } catch (error) {
       logger.error(error.message);
@@ -64,7 +104,18 @@ const UserController = {
   async create(req: Request, res: Response, next: NextFunction) {
     try {
       const newUser: IUser = await new User(req.body).save();
-      const result = await User.findOne({ _id: newUser._id });
+      const result = await User.findOne({ _id: newUser._id })
+        .populate('disciplines')
+        .populate({
+          path: 'department',
+          model: 'Department',
+          populate: {
+            path: 'faculty',
+            model: 'Faculty'
+          }
+        })
+        .populate('position')
+        .populate('workFocus');
       logger.info('Object created');
       return res.status(200).json(result);
     } catch (error) {
@@ -80,7 +131,18 @@ const UserController = {
           $set: req.body
         },
         { upsert: true }
-      );
+      )
+        .populate('disciplines')
+        .populate({
+          path: 'department',
+          model: 'Department',
+          populate: {
+            path: 'faculty',
+            model: 'Faculty'
+          }
+        })
+        .populate('position')
+        .populate('workFocus');
       if (!result) {
         return res.status(400).json({ message: 'No result found' });
       }
@@ -93,7 +155,18 @@ const UserController = {
   },
   async delete(req: Request, res: Response, next: NextFunction) {
     try {
-      const result: IUser = await User.findByIdAndDelete(mongoose.Types.ObjectId(req.body._id));
+      const result: IUser = await User.findByIdAndDelete(mongoose.Types.ObjectId(req.body._id))
+        .populate('disciplines')
+        .populate({
+          path: 'department',
+          model: 'Department',
+          populate: {
+            path: 'faculty',
+            model: 'Faculty'
+          }
+        })
+        .populate('position')
+        .populate('workFocus');
       if (!result) {
         return res.status(400).json({ message: 'No result found' });
       }

@@ -3,68 +3,12 @@
   level: 'info',
   application: 'eworkload',
   label: 'LOGGER',
-  timestamp: '2021-07-05T07:01:07.973Z'
+  timestamp: '2021-07-11T23:26:35.984Z'
 }
 {
   message: 'MongoDB connected...',
   level: 'info',
   application: 'eworkload',
   label: 'LOGGER',
-  timestamp: '2021-07-05T07:01:08.004Z'
-}
-{
-  message: '========== REQ LOG START ==========',
-  level: 'warn',
-  application: 'eworkload',
-  label: 'LOGGER',
-  timestamp: '2021-07-05T07:01:08.330Z'
-}
-{
-  message: 'http://localhost:3000/faculties: 2021-07-05T09:01:08+02:00',
-  level: 'info',
-  application: 'eworkload',
-  label: 'LOGGER',
-  timestamp: '2021-07-05T07:01:08.333Z'
-}
-{
-  message: 'body: {}',
-  level: 'info',
-  application: 'eworkload',
-  label: 'LOGGER',
-  timestamp: '2021-07-05T07:01:08.334Z'
-}
-{
-  message: 'params: {}',
-  level: 'info',
-  application: 'eworkload',
-  label: 'LOGGER',
-  timestamp: '2021-07-05T07:01:08.334Z'
-}
-{
-  message: 'path: "/faculties"',
-  level: 'info',
-  application: 'eworkload',
-  label: 'LOGGER',
-  timestamp: '2021-07-05T07:01:08.335Z'
-}
-{
-  message: 'query: {}',
-  level: 'info',
-  application: 'eworkload',
-  label: 'LOGGER',
-  timestamp: '2021-07-05T07:01:08.335Z'
-}
-{
-  message: '========== REQ LOG END ==========',
-  level: 'warn',
-  application: 'eworkload',
-  label: 'LOGGER',
-  timestamp: '2021-07-05T07:01:08.335Z'
-}
-{
-  message: 'Request successful',
-  level: 'info',
-  application: 'eworkload',
-  label: 'LOGGER',
-  timestamp: '2021-07-05T07:01:08.349Z'
+  timestamp: '2021-07-11T23:26:36.007Z'
 }

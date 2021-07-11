@@ -1,13 +1,9 @@
-import IQualification from '../../qualification/qualification.interface';
-import { Document } from 'mongoose';
+import { IQualification } from '../../qualification/qualification.interface';
+import { IActivity } from '../activity.interface';
 
-import IActivity from '../activity.interface';
-
-export default interface IAcademicAdministrationActivity
-  extends IActivity,
-    Document {
-  title: string;
-  qualificationId: string;
+export interface IAcademicAdministrationActivity extends IActivity {
+  title?: string;
+  qualificationId?: string;
   qualification?: IQualification;
   description: string;
   evidence?: string;

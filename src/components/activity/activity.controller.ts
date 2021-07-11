@@ -1,5 +1,4 @@
-import IActivity from './activity.interface';
-
+import { IActivity } from './activity.interface';
 import Activity from './activity.model';
 
 export default class ActivityController {
@@ -9,7 +8,7 @@ export default class ActivityController {
   public static async all() {
     return await Activity.find({});
   }
-  public static async byUser(userId: string) {
+  public static async byUserId(userId: string) {
     return await Activity.find({ userId: userId });
   }
   public static async create(activity: IActivity) {

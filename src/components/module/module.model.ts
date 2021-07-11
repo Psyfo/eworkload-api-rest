@@ -1,8 +1,4 @@
-import IModule from './module.interface';
 import mongoose from 'mongoose';
-
-import GroupController from '../group/group.controller';
-import IGroup from '../group/group.interface';
 
 const moduleSchema = new mongoose.Schema(
   {
@@ -76,7 +72,7 @@ const moduleSchema = new mongoose.Schema(
       type: Number
     },
     studentsExpected: {
-    type: Number
+      type: Number
     },
     moderation: {
       type: String
@@ -100,7 +96,7 @@ const moduleSchema = new mongoose.Schema(
 );
 
 // INDEX
-moduleSchema.index({ moduleId: 1, blockId: 1, offeringTypeId: 1, qualificationId: 1 }, { unique: true });
+moduleSchema.index({ moduleId: 1, year: 1, blockId: 1, offeringTypeId: 1, qualificationId: 1 }, { unique: true });
 
 // HOOKS
 // Add group by default
@@ -138,7 +134,7 @@ moduleSchema.virtual('qualification', {
 moduleSchema.virtual('venue', {
   ref: 'Venue',
   localField: 'venueId',
-  foreignField: '_id',
+  foreignField: 'venueId',
   justOne: true
 });
 moduleSchema.virtual('block', {

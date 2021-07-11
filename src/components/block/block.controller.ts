@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import { NextFunction, Request, Response } from 'express';
 
 import { logger } from '../../config/logger.config';
-import IBlock from './block.interface';
+import {IBlock} from './block.interface';
 import Block from './block.model';
 
 const BlockController = {

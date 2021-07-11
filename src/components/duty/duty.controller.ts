@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import mongoose from 'mongoose';
 
 import { logger } from '../../config/logger.config';
-import IDuty from './duty.interface';
+import { IDuty } from './duty.interface';
 import Duty from './duty.model';
 
 const DutyController = {
@@ -12,7 +12,7 @@ const DutyController = {
       if (!result) {
         return res.status(400).json({ message: 'No result found' });
       }
-      logger.info('Request successful');
+
       return res.status(200).json(result);
     } catch (error) {
       logger.error(error.message);
@@ -25,7 +25,7 @@ const DutyController = {
       if (!result) {
         return res.status(400).json({ message: 'No result found' });
       }
-      logger.info('Request successful');
+
       return res.status(200).json(result);
     } catch (error) {
       logger.error(error.message);
@@ -38,7 +38,7 @@ const DutyController = {
       if (!result) {
         return res.status(400).json({ message: 'No result found' });
       }
-      logger.info('Request successful');
+
       return res.status(200).json(result);
     } catch (error) {
       logger.error(error.message);

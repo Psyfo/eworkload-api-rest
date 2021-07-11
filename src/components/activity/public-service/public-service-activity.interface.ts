@@ -1,8 +1,6 @@
-import { Document } from 'mongoose';
+import { IActivity } from '../activity.interface';
 
-import IActivity from '../activity.interface';
-
-export default interface IPublicServiceActivity extends IActivity, Document {
+export interface IPublicServiceActivity extends IActivity {
   title: string;
   description: string;
   evidence?: string;

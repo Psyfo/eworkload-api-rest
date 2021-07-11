@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose, { Types } from 'mongoose';
 
 const groupSchema = new mongoose.Schema(
   {
@@ -6,6 +6,9 @@ const groupSchema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true
+    },
+    name: {
+      type: String
     },
     moduleId: {
       type: String,

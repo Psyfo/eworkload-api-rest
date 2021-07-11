@@ -1,8 +1,8 @@
-import mongoose from 'mongoose';
 import { NextFunction, Request, Response } from 'express';
+import mongoose from 'mongoose';
 
 import { logger } from '../../config/logger.config';
-import IDiscipline from './discipline.interface';
+import { IDiscipline } from './discipline.interface';
 import Discipline from './discipline.model';
 
 const DisciplineController = {
@@ -12,7 +12,7 @@ const DisciplineController = {
       if (!result) {
         return res.status(400).json({ message: 'No result found' });
       }
-      logger.info('Request successful');
+
       return res.status(200).json(result);
     } catch (error) {
       logger.error(error.message);
@@ -25,7 +25,7 @@ const DisciplineController = {
       if (!result) {
         return res.status(400).json({ message: 'No result found' });
       }
-      logger.info('Request successful');
+
       return res.status(200).json(result);
     } catch (error) {
       logger.error(error.message);
@@ -38,7 +38,7 @@ const DisciplineController = {
       if (!result) {
         return res.status(400).json({ message: 'No result found' });
       }
-      logger.info('Request successful');
+
       return res.status(200).json(result);
     } catch (error) {
       logger.error(error.message);

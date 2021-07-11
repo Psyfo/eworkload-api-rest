@@ -1,10 +1,8 @@
-import { Document } from 'mongoose';
+import { IActivity } from '../activity.interface';
 
-import IActivity from '../activity.interface';
-
-export default interface IResearchActivity extends IActivity, Document {
-  output: string;
-  title: string;
+export interface IResearchActivity extends IActivity {
+  output?: string;
+  title?: string;
   conferenceActivities?: string[];
   authors?: string[];
   url?: string;

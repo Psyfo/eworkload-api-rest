@@ -20,6 +20,14 @@ const personnelDevelopmentActivitySchema = new mongoose.Schema({
   evidence: {
     type: String
   }
+},{
+  timestamps: true,
+  toJSON: {
+    virtuals: true
+  },
+  toObject: {
+    virtuals: true
+  }
 });
 
 // VIRTUALS

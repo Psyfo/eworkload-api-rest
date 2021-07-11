@@ -1,11 +1,8 @@
-import { Document } from 'mongoose';
-
-export default interface IBlock extends Document {
-  blockId: string;
-  name: string;
-  description?: string;
+export interface IBlock {
+  _id?:string;
+  blockId?: string;
+  name?: string;
+  weeks: number;
   createdAt?: Date;
   updatedAt?: Date;
 }
-
-export interface BlockModel extends IBlock, Document {}

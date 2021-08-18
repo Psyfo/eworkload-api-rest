@@ -27,6 +27,7 @@ import * as studentRouter from './src/components/student/student.routes';
 import * as userRouter from './src/components/user/users.routes';
 import * as venueRouter from './src/components/venue/venue.routes';
 import * as workFocusRouter from './src/components/work-focus/work-focus.route';
+import * as workloadRouter from './src/components/workload/workload.route';
 import config from './src/config/config';
 import dbConfig from './src/config/keys.config';
 import { logger } from './src/config/logger.config';
@@ -40,28 +41,28 @@ const PORT = config.PORT || 3000;
 
 // MONGOOSE CONFIG
 mongoose
-  .connect(db, {
-    useNewUrlParser: true,
-    useCreateIndex: true,
-    useFindAndModify: false,
-    useUnifiedTopology: true
-  })
-  .then(() => {
-    logger.info('MongoDB connected...');
-  })
-  .catch((err) => {
-    logger.error(err);
-  });
+	.connect(db, {
+		useNewUrlParser: true,
+		useCreateIndex: true,
+		useFindAndModify: false,
+		useUnifiedTopology: true
+	})
+	.then(() => {
+		logger.info('MongoDB connected...');
+	})
+	.catch(err => {
+		logger.error(err);
+	});
 mongoose.set('debug', false);
-mongoose.connection.on('error', (error) => logger.error(error));
+mongoose.connection.on('error', error => logger.error(error));
 
 // MIDDLEWARE (BE AWARE THAT ORDER MAY BE RELEVANT)
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json({ limit: '50mb' }));
 app.use(
-  express.urlencoded({
-    extended: false
-  })
+	express.urlencoded({
+		extended: false
+	})
 );
 app.use(cors());
 app.use(compression());

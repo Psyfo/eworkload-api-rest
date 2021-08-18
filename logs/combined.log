@@ -3,12 +3,12 @@
   level: 'info',
   application: 'eworkload',
   label: 'LOGGER',
-  timestamp: '2021-07-11T23:26:35.984Z'
+  timestamp: '2021-08-18T07:30:37.961Z'
 }
 {
   message: 'MongoDB connected...',
   level: 'info',
   application: 'eworkload',
   label: 'LOGGER',
-  timestamp: '2021-07-11T23:26:36.007Z'
+  timestamp: '2021-08-18T07:30:37.982Z'
 }

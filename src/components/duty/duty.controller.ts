@@ -1,53 +1,44 @@
-import { NextFunction, Request, Response } from 'express';
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import mongoose from 'mongoose';
+import { Request, Response } from 'express';
 
 import { logger } from '../../config/logger.config';
-import { IDuty } from './duty.interface';
+import {IDuty} from './duty.interface';
 import Duty from './duty.model';
 
-const DutyController = {
-  async all(req: Request, res: Response, next: NextFunction) {
+class DutyController  {
+   static all = async(req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
-      const result = await Duty.find();
+      const result: IDuty[] = await Duty.find();
       if (!result) {
         return res.status(400).json({ message: 'No result found' });
       }
-
+      
       return res.status(200).json(result);
     } catch (error) {
       logger.error(error.message);
       return res.status(500).json({ message: 'Server Error' });
     }
-  },
-  async byId(req: Request, res: Response, next: NextFunction) {
+  }
+   static byId = async(req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
-      const result = await Duty.findOne({ _id: req.params._id });
+      const result:IDuty = await Duty.findOne({ _id: req.params._id });
       if (!result) {
         return res.status(400).json({ message: 'No result found' });
       }
-
+      
       return res.status(200).json(result);
     } catch (error) {
       logger.error(error.message);
       return res.status(500).json({ message: 'Server Error' });
     }
-  },
-  async byDutyId(req: Request, res: Response, next: NextFunction) {
+  }
+   static create = async(req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
-      const result = await Duty.findOne({ dutyId: req.params.dutyId });
-      if (!result) {
-        return res.status(400).json({ message: 'No result found' });
-      }
-
-      return res.status(200).json(result);
-    } catch (error) {
-      logger.error(error.message);
-      return res.status(500).json({ message: 'Server Error' });
-    }
-  },
-  async create(req: Request, res: Response, next: NextFunction) {
-    try {
-      const newDuty: IDuty = await new Duty(req.body).save();
+      const newDuty: IDuty = new Duty(req.body)
+      await newDuty.save();
       const result = await Duty.findOne({ _id: newDuty._id });
       logger.info('Object created');
       return res.status(200).json(result);
@@ -55,10 +46,10 @@ const DutyController = {
       logger.error(error.message);
       return res.status(500).json({ message: 'Server Error' });
     }
-  },
-  async update(req: Request, res: Response, next: NextFunction) {
+  }
+   static update = async(req: Request, res: Response): Promise<Response<any, Record<string, any>>> =>{
     try {
-      const result = await Duty.findByIdAndUpdate(
+      const result:IDuty = await Duty.findByIdAndUpdate(
         { _id: mongoose.Types.ObjectId(req.body._id) },
         {
           $set: req.body
@@ -74,8 +65,8 @@ const DutyController = {
       logger.error(error.message);
       return res.status(500).json({ message: 'Server Error' });
     }
-  },
-  async delete(req: Request, res: Response, next: NextFunction) {
+  }
+   static delete = async(req: Request, res: Response): Promise<Response<any, Record<string, any>>> =>{
     try {
       const result: IDuty = await Duty.findByIdAndDelete(mongoose.Types.ObjectId(req.body._id));
       if (!result) {

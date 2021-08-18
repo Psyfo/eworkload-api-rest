@@ -23,13 +23,17 @@ const qualificationSchema = new mongoose.Schema(
       trim: true
     },
     credits: {
-      type: String,
-      trim: true
+      type: Number
     },
     departmentId: {
       type: String,
       trim: true,
       ref: 'Department'
+    },
+    coordinatorId: {
+      type: String,
+      trim: true,
+      ref: 'User'
     },
     createdAt: {
       type: Date
@@ -56,6 +60,11 @@ qualificationSchema.virtual('department', {
   foreignField: 'departmentId',
   justOne: true
 });
-
+qualificationSchema.virtual('coordinator', {
+  ref: 'User',
+  localField: 'coordinatorId',
+  foreignField: 'userId',
+  justOne: true
+});
 const Qualification = mongoose.model('Qualification', qualificationSchema);
 export default Qualification;

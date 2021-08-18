@@ -2,12 +2,13 @@ import mongoose from 'mongoose';
 
 import WorkloadController from '../../workload/workload.controller';
 import Activity from '../activity.model';
+import SupervisionActivityController from './supervision-activity.controller';
+import { ISupervisionActivity } from './supervision-activity.interface';
 
 const supervisionActivitySchema = new mongoose.Schema(
   {
     supervisionRole: {
       type: String,
-      required: true,
       trim: true
     },
     split: {
@@ -38,13 +39,12 @@ const supervisionActivitySchema = new mongoose.Schema(
 );
 
 // INDEX
-supervisionActivitySchema.index({ studentId: 1, userId: 1, year: 1 }, { unique: true });
+// supervisionActivitySchema.index({ studentId: 1, userId: 1, year: 1 }, { unique: true });
 
 // HOOKS
-// supervisionActivitySchema.post('save', async function () {
-//   const activity: any = this;
-//   await WorkloadController.calculateTotalWorkload(activity.userId);
-// });
+supervisionActivitySchema.post('find', async function (activities) {
+  await SupervisionActivityController.calcWorkload(activities);
+});
 // supervisionActivitySchema.post('findOneAndUpdate', async function (doc) {
 //   const activity: any = doc;
 //   await WorkloadController.calculateTotalWorkload(activity.userId);
@@ -58,10 +58,9 @@ supervisionActivitySchema.index({ studentId: 1, userId: 1, year: 1 }, { unique: 
 supervisionActivitySchema.virtual('student', {
   ref: 'Student',
   localField: 'studentId',
-  foreignField: 'studentId',
+  foreignField: '_id',
   justOne: true
 });
-
 
 const SupervisionActivity = Activity.discriminator('SupervisionActivity', supervisionActivitySchema);
 export default SupervisionActivity;

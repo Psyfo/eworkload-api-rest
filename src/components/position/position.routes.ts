@@ -1,5 +1,5 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
 import express from 'express';
-
 import PositionController from './position.controller';
 
 const router = express.Router();

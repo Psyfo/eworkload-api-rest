@@ -1,10 +1,10 @@
 import mongoose from 'mongoose';
+import { IModule } from './module.interface';
 
 const moduleSchema = new mongoose.Schema(
   {
     moduleId: {
       type: String,
-      unique: false,
       trim: true
     },
     year: {
@@ -34,7 +34,6 @@ const moduleSchema = new mongoose.Schema(
     },
     offeringTypeId: {
       type: String,
-      unique: false,
       trim: true,
       ref: 'OfferingType'
     },
@@ -96,21 +95,9 @@ const moduleSchema = new mongoose.Schema(
 );
 
 // INDEX
-moduleSchema.index({ moduleId: 1, year: 1, blockId: 1, offeringTypeId: 1, qualificationId: 1 }, { unique: true });
+moduleSchema.index({ moduleId: 1, year: 1, qualificationId: 1 }, { unique: true });
 
 // HOOKS
-// Add group by default
-// moduleSchema.post('save', async function(doc) {
-//   const module: IModule = doc as IModule;
-//   const newGroup: IGroup = {
-//     groupId: 'A',
-//     moduleId: module.id,
-//     studentsEnrolled: module.studentsEnrolled,
-//     modularity: 1
-//   } as IGroup;
-//   // create default group
-//   await GroupController.createGroup(newGroup);
-// });
 
 // VIRTUALS
 moduleSchema.virtual('discipline', {
@@ -156,5 +143,5 @@ moduleSchema.virtual('moderator', {
   justOne: true
 });
 
-const Module = mongoose.model('Module', moduleSchema);
+const Module = mongoose.model<IModule>('Module', moduleSchema);
 export default Module;

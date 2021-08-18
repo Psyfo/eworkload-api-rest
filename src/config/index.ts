@@ -5,4 +5,3 @@ export * from './logger.config';
 export * from './mail.config';
 export * from './parameters.config';
 // end:ng42.barrel
-

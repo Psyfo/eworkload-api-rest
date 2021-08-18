@@ -1,5 +1,5 @@
-export default interface IAuthData {
-  userId: string;
-  token: string;
-  tokenExpiration: number;
+export interface IAuthData {
+	userId: string;
+	token: string;
+	tokenExpiration: number;
 }

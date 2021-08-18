@@ -1,5 +1,4 @@
 import { IStudent } from '../../student/student.interface';
-import { ISupervisionWorkload } from '../../workload/supervision/supervision-workload.interface';
 import { IActivity } from '../activity.interface';
 
 export interface ISupervisionActivity extends IActivity {
@@ -9,4 +8,10 @@ export interface ISupervisionActivity extends IActivity {
   student?: IStudent;
   year?: string;
   workload?: ISupervisionWorkload;
+}
+
+export interface ISupervisionWorkload {
+	total: number;
+	percentageOfTeaching: number;
+	percentageOfAnnual: number;
 }

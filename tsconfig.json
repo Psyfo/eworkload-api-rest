@@ -1,11 +1,25 @@
 {
-  "compilerOptions": {
-    "target": "es2016",
-    "module": "commonjs",
-    "outDir": "./dist",
-    "strict": true,
-    "esModuleInterop": true,
-    "inlineSourceMap": true,
-    "strictNullChecks": false
-  }
+	"compilerOptions": {
+		"target": "ESNext",
+		"module": "commonjs",
+		"moduleResolution": "node",
+		"baseUrl": "./src",
+		"paths": {
+			"src/*": ["src/*"],
+			"auth/*": ["src/auth/*"],
+			"components/*": ["src/components/*"],
+			"config/*": ["src/config/*"],
+			"middleware/*": ["src/middleware/*"],
+			"routes/*": ["src/routes/*"]
+		},
+		"outDir": "./dist",
+		"strict": true,
+		"esModuleInterop": true,
+		"inlineSourceMap": true,
+		"strictNullChecks": true,
+		"noImplicitAny": true,
+		"lib": ["ESNext"]
+	},
+	"include": ["**/*"],
+	"exclude": ["node_modules"]
 }

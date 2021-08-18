@@ -1,129 +1,106 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Request, Response } from 'express';
 import mongoose from 'mongoose';
-import IUser from '../user/user.interface';
-import IAcademicAdministrationWorkload from './academic-administration/academic-administration-workload.interface';
-import ICommunityInstructionWorkload from './community-instruction/community-instruction-workload.interface';
-import IExecutiveManagementWorkload from './executive-management/executive-management-workload.interface';
-import IFormalInstructionWorkload from './formal-instruction/formal-instruction-workload.interface';
-import IPersonnelDevelopmentWorkload from './personnel-development/personnel-development-workload.interface';
-import IPublicServiceWorkload from './public-service/public-service-workload.interface';
-import IResearchWorkload from './research/research-workload.interface';
-import IWorkload from './supervision/supervision-workload.interface';
-
 import { logger } from '../../config/logger.config';
-import AcademicAdministrationActivityController from '../activity/academic-administration/academic-administration-activity.controller';
-import CommunityInstructionActivityController from '../activity/community-instruction/community-instruction-activity.controller';
-import ExecutiveManagementActivityController from '../activity/executive-management/executive-management-activity.controller';
-import FormalInstructionActivityController from '../activity/formal-instruction/formal-instruction-activity.controller';
-import PersonnelDevelopmentActivityController from '../activity/personnel-development/personnel-development-activity.controller';
-import PublicServiceActivityController from '../activity/public-service/public-service-activity.controller';
-import ResearchActivityController from '../activity/research/research-activity.controller';
-import SupervisionActivityController from '../activity/supervision/supervision-activity.controller';
-import UserController from '../user/user.controller';
-import WorkFocusController from '../work-focus/work-focus.controller';
-import AcademicAdministrationWorkloadController from './academic-administration/academic-administration-workload.controller';
-import CommunityInstructionWorkloadController from './community-instruction/community-instruction-workload.controller';
-import ExecutiveManagementWorkloadController from './executive-management/executive-management-workload.controller';
-import FormalInstructionWorkloadController from './formal-instruction/formal-instruction-workload.controller';
-import PersonnelDevelopmentWorkloadController from './personnel-development/personnel-development-workload.controller';
-import PublicServiceWorkloadController from './public-service/public-service-workload.controller';
-import ResearchWorkloadController from './research/research-workload.controller';
-import { NextFunction, Request } from 'express';
-import { Response } from 'express';
 import Workload from './workload.model';
 
-const WorkloadController = {
-  async all(req: Request, res: Response, next: NextFunction) {
-    try {
-      const result = await Workload.find();
-      if (!result) {
-        return res.status(400).json({ message: 'No result found' });
-      }
-      logger.info('Request successful');
-      return res.status(200).json(result);
-    } catch (error) {
-      logger.error(error.message);
-      return res.status(500).json({ message: 'Server Error' });
-    }
-  },
-  async byId(req: Request, res: Response, next: NextFunction) {
-    try {
-      const result = await Workload.findOne({ _id: req.params._id });
-      if (!result) {
-        return res.status(400).json({ message: 'No result found' });
-      }
-      logger.info('Request successful');
-      return res.status(200).json(result);
-    } catch (error) {
-      logger.error(error.message);
-      return res.status(500).json({ message: 'Server Error' });
-    }
-  },
-  async byUserId(req: Request, res: Response, next: NextFunction) {
-    try {
-      const result = await Workload.findOne({ userId: req.params.userId });
-      if (!result) {
-        return res.status(400).json({ message: 'No result found' });
-      }
-      logger.info('Request successful');
-      return res.status(200).json(result);
-    } catch (error) {
-      logger.error(error.message);
-      return res.status(500).json({ message: 'Server Error' });
-    }
-  },
-  async create(req: Request, res: Response, next: NextFunction) {
-    try {
-      const newWorkload = await new Workload(req.body).save();
-      const result = await Workload.findOne({ _id: newWorkload._id });
-      logger.info('Object created');
-      return res.status(200).json(result);
-    } catch (error) {
-      logger.error(error.message);
-      return res.status(500).json({ message: 'Server Error' });
-    }
-  },
-  async update(req: Request, res: Response, next: NextFunction) {
-    try {
-      const result = await Workload.findByIdAndUpdate(
-        { _id: mongoose.Types.ObjectId(req.body._id) },
-        {
-          $set: req.body
-        },
-        { upsert: true }
-      );
-      if (!result) {
-        return res.status(400).json({ message: 'No result found' });
-      }
-      logger.info('Object updated');
-      return res.status(200).json(result);
-    } catch (error) {
-      logger.error(error.message);
-      return res.status(500).json({ message: 'Server Error' });
-    }
-  },
-  async delete(req: Request, res: Response, next: NextFunction) {
-    try {
-      const result = await Workload.findByIdAndDelete(mongoose.Types.ObjectId(req.body._id));
-      if (!result) {
-        return res.status(400).json({ message: 'No result found' });
-      }
-      logger.info('Object deleted');
-      return res.status(200).json(result);
-    } catch (error) {
-      logger.error(error.message);
-      return res.status(500).json({ message: 'Server Error' });
-    }
-  },
-  async totalHours(req: Request, res: Response, next: NextFunction) {},
-  async teachingHours(req: Request, res: Response, next: NextFunction) {},
-  async serviceHours(req: Request, res: Response, next: NextFunction) {},
-  async researchHours(req: Request, res: Response, next: NextFunction) {},
-  async initiliazeWorkloads(req: Request, res: Response, next: NextFunction) {},
-  async deleteWorkloads(req: Request, res: Response, next: NextFunction) {},
-  async totalWorkload(req: Request, res: Response, next: NextFunction) {},
-  async workloadSummaries(req: Request, res: Response, next: NextFunction) {},
-  async calculateTotalWorkload(userId: string) {}
-};
+class WorkloadController {
+	static all = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
+		try {
+			const result = await Workload.find();
+			if (!result) {
+				return res.status(400).json({ message: 'No result found' });
+			}
+
+			return res.status(200).json(result);
+		} catch (error) {
+			logger.error(error.message);
+			return res.status(500).json({ message: 'Server Error' });
+		}
+	};
+	static byId = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
+		try {
+			const result = await Workload.findOne({ _id: req.params._id });
+			if (!result) {
+				return res.status(400).json({ message: 'No result found' });
+			}
+
+			return res.status(200).json(result);
+		} catch (error) {
+			logger.error(error.message);
+			return res.status(500).json({ message: 'Server Error' });
+		}
+	};
+	static byUserId = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
+		try {
+			const result = await Workload.findOne({ userId: req.params.userId });
+			if (!result) {
+				return res.status(400).json({ message: 'No result found' });
+			}
+
+			return res.status(200).json(result);
+		} catch (error) {
+			logger.error(error.message);
+			return res.status(500).json({ message: 'Server Error' });
+		}
+	};
+	static create = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
+		try {
+			const newWorkload = await new Workload(req.body).save();
+			const result = await Workload.findOne({ _id: newWorkload._id });
+			logger.info('Object created');
+			return res.status(200).json(result);
+		} catch (error) {
+			logger.error(error.message);
+			return res.status(500).json({ message: 'Server Error' });
+		}
+	};
+	static update = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
+		try {
+			const result = await Workload.findByIdAndUpdate(
+				{ _id: mongoose.Types.ObjectId(req.body._id) },
+				{
+					$set: req.body
+				},
+				{ upsert: true }
+			);
+			if (!result) {
+				return res.status(400).json({ message: 'No result found' });
+			}
+			logger.info('Object updated');
+			return res.status(200).json(result);
+		} catch (error) {
+			logger.error(error.message);
+			return res.status(500).json({ message: 'Server Error' });
+		}
+	};
+	static delete = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
+		try {
+			const result = await Workload.findByIdAndDelete(mongoose.Types.ObjectId(req.body._id));
+			if (!result) {
+				return res.status(400).json({ message: 'No result found' });
+			}
+			logger.info('Object deleted');
+			return res.status(200).json(result);
+		} catch (error) {
+			logger.error(error.message);
+			return res.status(500).json({ message: 'Server Error' });
+		}
+	};
+	static totalHours = (): void => {};
+	static teachingHours = (): void => {};
+	static serviceHours = (): void => {};
+	static researchHours = (): void => {};
+	static initiliazeWorkloads = (): void => {};
+	static deleteWorkloads = (): void => {};
+	static totalWorkload = (): void => {};
+	static workloadSummaries = (): void => {};
+	static calculateTotalWorkload = (): void => {};
+}
 
 export default WorkloadController;
 

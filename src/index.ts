@@ -28,16 +28,8 @@ export * from './components/user';
 export * from './components/venue';
 export * from './components/work-focus';
 export * from './components/workload';
-export * from './components/workload/academic-administration';
-export * from './components/workload/community-instruction';
-export * from './components/workload/executive-management';
-export * from './components/workload/formal-instruction';
-export * from './components/workload/personnel-development';
-export * from './components/workload/public-service';
-export * from './components/workload/research';
-export * from './components/workload/supervision';
 export * from './config';
 export * from './middleware';
 export * from './routes';
-// end:ng42.barrel
 
+// end:ng42.barrel

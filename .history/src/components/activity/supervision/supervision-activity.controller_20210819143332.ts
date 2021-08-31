@@ -151,10 +151,9 @@ class SupervisionActivityController {
 		try {
 			const workload: ISupervisionWorkload = {
 				percentageOfTeaching: await SupervisionActivityController.percentageOfTeaching(activity),
-				percentageOfAnnual: await SupervisionActivityController.percentageOfAnnual(activity),
-				total: await SupervisionActivityController.totalHours(activity)
+				percentageOfAnnual: SupervisionActivityController.percentageOfAnnual(activity),
+				total: SupervisionActivityController.totalHours(activity)
 			};
-			return workload;
 		} catch (error) {
 			logger.error(error);
 			throw new Error(error);

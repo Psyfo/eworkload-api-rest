@@ -1,7 +1,9 @@
 import mongoose from 'mongoose';
+
+import WorkloadController from '../../workload/workload.controller';
 import Activity from '../activity.model';
 import SupervisionActivityController from './supervision-activity.controller';
-import { ISupervisionActivity, ISupervisionWorkload } from './supervision-activity.interface';
+import { ISupervisionActivity } from './supervision-activity.interface';
 
 const supervisionActivitySchema = new mongoose.Schema(
 	{
@@ -40,14 +42,10 @@ const supervisionActivitySchema = new mongoose.Schema(
 // supervisionActivitySchema.index({ studentId: 1, userId: 1, year: 1 }, { unique: true });
 
 // HOOKS
-supervisionActivitySchema.pre('save', function (this: ISupervisionActivity, next) {
+supervisionActivitySchema.pre('find', function (this: ISupervisionActivity, next) {
 	this.populate('user')
 		.execPopulate()
-		.then(async () => {
-			const workload: ISupervisionWorkload = await SupervisionActivityController.calcWorkload(this);
-			this.workload = workload;
-			next();
-		});
+		.then(async () => {});
 });
 
 // VIRTUALS

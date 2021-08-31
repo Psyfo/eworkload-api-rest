@@ -40,7 +40,7 @@ const supervisionActivitySchema = new mongoose.Schema(
 // supervisionActivitySchema.index({ studentId: 1, userId: 1, year: 1 }, { unique: true });
 
 // HOOKS
-supervisionActivitySchema.pre('save', function (this: ISupervisionActivity, next) {
+supervisionActivitySchema.pre('find', function (this: ISupervisionActivity, next) {
 	this.populate('user')
 		.execPopulate()
 		.then(async () => {

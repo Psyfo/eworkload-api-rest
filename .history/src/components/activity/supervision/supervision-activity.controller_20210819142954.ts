@@ -147,14 +147,46 @@ class SupervisionActivityController {
 			((await SupervisionActivityController.totalHours(activity)) / (await WorkFocusController.annualHours())) * 100
 		);
 	};
-	static calcWorkload = async (activity: ISupervisionActivity): Promise<ISupervisionWorkload> => {
+	static calcWorkload = async (activities: any): Promise<ISupervisionWorkload> => {
 		try {
-			const workload: ISupervisionWorkload = {
-				percentageOfTeaching: await SupervisionActivityController.percentageOfTeaching(activity),
-				percentageOfAnnual: await SupervisionActivityController.percentageOfAnnual(activity),
-				total: await SupervisionActivityController.totalHours(activity)
-			};
-			return workload;
+			// Use activity to calculate workload
+			// const activity:any = await SupervisionActivity.findOne({ _id: mongoose.Types.ObjectId(activity._id) })
+			//   .populate('user')
+			//   .populate('duty')
+			//   .populate('student');
+			// if (!activity) {
+			//   logger.error('Activity not found');
+			// }
+			if (!activities.length) {
+				console.log('No Supervision Activities to calculate');
+			}
+			activities.map(async (activity: ISupervisionActivity) => {
+				const workload: ISupervisionWorkload = {
+					total: await SupervisionActivityController.totalHours(activity),
+					percentageOfTeaching: await SupervisionActivityController.percentageOfTeaching(activity),
+					percentageOfAnnual: await SupervisionActivityController.percentageOfAnnual(activity)
+				};
+				await SupervisionActivity.findByIdAndUpdate(
+					{ _id: mongoose.Types.ObjectId(activity._id) },
+					{
+						$set: {
+							workload: workload
+						}
+					},
+					{ upsert: true }
+				);
+			});
+			// for (let activity of activities) {
+			//   const workload: ISupervisionWorkload = {
+			//     total: await SupervisionActivityController.totalHours(activity),
+			//     percentageOfTeaching: await SupervisionActivityController.percentageOfTeaching(activity),
+			//     percentageOfAnnual: await SupervisionActivityController.percentageOfAnnual(activity)
+			//   };
+			//   // Update activity with workload
+			//
+			// }
+
+			//logger.info('supervision workload updated');
 		} catch (error) {
 			logger.error(error);
 			throw new Error(error);

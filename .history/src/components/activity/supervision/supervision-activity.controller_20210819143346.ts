@@ -154,7 +154,6 @@ class SupervisionActivityController {
 				percentageOfAnnual: await SupervisionActivityController.percentageOfAnnual(activity),
 				total: await SupervisionActivityController.totalHours(activity)
 			};
-			return workload;
 		} catch (error) {
 			logger.error(error);
 			throw new Error(error);

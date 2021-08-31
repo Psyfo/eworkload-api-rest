@@ -1,4 +1,4 @@
-import { model, Schema } from 'mongoose';
+import { model, Schema, Types } from 'mongoose';
 
 const workloadSchema = new Schema(
 	{
@@ -15,78 +15,37 @@ const workloadSchema = new Schema(
 			ref: 'WorkFocus'
 		},
 		academicAdministrationWorkload: {
-			total: {
-				type: Number,
-				default: 0
-			},
-			percentageOfAnnual: {
-				type: Number,
-				default: 0
+			type: {
+				type: Number
 			}
 		},
 		communityInstructionWorkload: {
-			total: {
-				type: Number,
-				default: 0
-			},
-			percentageOfAnnual: {
-				type: Number,
-				default: 0
-			}
+			type: Number,
+			default: 0
 		},
 		executiveManagementWorkload: {
-			total: {
-				type: Number,
-				default: 0
-			},
-			percentageOfAnnual: {
-				type: Number,
-				default: 0
-			}
+			type: Number,
+			default: 0
 		},
 		formalInstructionWorkload: {
 			type: Number,
 			default: 0
 		},
 		personnelDevelopmentWorkload: {
-			total: {
-				type: Number,
-				default: 0
-			},
-			percentageOfAnnual: {
-				type: Number,
-				default: 0
-			}
+			type: Number,
+			default: 0
 		},
 		publicServiceWorkload: {
-			total: {
-				type: Number,
-				default: 0
-			},
-			percentageOfAnnual: {
-				type: Number,
-				default: 0
-			}
+			type: Number,
+			default: 0
 		},
 		researchWorkload: {
-			total: {
-				type: Number,
-				default: 0
-			},
-			percentageOfAnnual: {
-				type: Number,
-				default: 0
-			}
+			type: Number,
+			default: 0
 		},
 		supervisionWorkload: {
-			total: {
-				type: Number,
-				default: 0
-			},
-			percentageOfAnnual: {
-				type: Number,
-				default: 0
-			}
+			type: Number,
+			default: 0
 		}
 	},
 	{

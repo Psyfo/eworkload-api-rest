@@ -150,11 +150,10 @@ class SupervisionActivityController {
 	static calcWorkload = async (activity: ISupervisionActivity): Promise<ISupervisionWorkload> => {
 		try {
 			const workload: ISupervisionWorkload = {
-				percentageOfTeaching: await SupervisionActivityController.percentageOfTeaching(activity),
-				percentageOfAnnual: await SupervisionActivityController.percentageOfAnnual(activity),
-				total: await SupervisionActivityController.totalHours(activity)
+				percentageOfTeaching: await SupervisionActivityController.percentageOfTeaching,
+				percentageOfAnnual: SupervisionActivityController.percentageOfAnnual,
+				total: SupervisionActivityController.totalHours
 			};
-			return workload;
 		} catch (error) {
 			logger.error(error);
 			throw new Error(error);

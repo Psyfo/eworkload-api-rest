@@ -25,68 +25,32 @@ const workloadSchema = new Schema(
 			}
 		},
 		communityInstructionWorkload: {
-			total: {
-				type: Number,
-				default: 0
-			},
-			percentageOfAnnual: {
-				type: Number,
-				default: 0
-			}
+			type: Number,
+			default: 0
 		},
 		executiveManagementWorkload: {
-			total: {
-				type: Number,
-				default: 0
-			},
-			percentageOfAnnual: {
-				type: Number,
-				default: 0
-			}
+			type: Number,
+			default: 0
 		},
 		formalInstructionWorkload: {
 			type: Number,
 			default: 0
 		},
 		personnelDevelopmentWorkload: {
-			total: {
-				type: Number,
-				default: 0
-			},
-			percentageOfAnnual: {
-				type: Number,
-				default: 0
-			}
+			type: Number,
+			default: 0
 		},
 		publicServiceWorkload: {
-			total: {
-				type: Number,
-				default: 0
-			},
-			percentageOfAnnual: {
-				type: Number,
-				default: 0
-			}
+			type: Number,
+			default: 0
 		},
 		researchWorkload: {
-			total: {
-				type: Number,
-				default: 0
-			},
-			percentageOfAnnual: {
-				type: Number,
-				default: 0
-			}
+			type: Number,
+			default: 0
 		},
 		supervisionWorkload: {
-			total: {
-				type: Number,
-				default: 0
-			},
-			percentageOfAnnual: {
-				type: Number,
-				default: 0
-			}
+			type: Number,
+			default: 0
 		}
 	},
 	{

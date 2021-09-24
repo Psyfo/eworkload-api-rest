@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-floating-promises */
 import mongoose from 'mongoose';
 import Activity from '../activity.model';
 import FormalInstructionActivityController from './formal-instruction-activity.controller';
@@ -74,5 +75,8 @@ formalInstructionActivitySchema.virtual('group', {
 	justOne: true
 });
 
-const FormalInstructionActivity = Activity.discriminator('FormalInstructionActivity', formalInstructionActivitySchema);
+const FormalInstructionActivity = Activity.discriminator<IFormalInstructionActivity>(
+	'FormalInstructionActivity',
+	formalInstructionActivitySchema
+);
 export default FormalInstructionActivity;

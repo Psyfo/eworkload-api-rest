@@ -1,6 +1,8 @@
 import mongoose from 'mongoose';
 import { v4 as uuidv4 } from 'uuid';
 
+import { IActivity } from './activity.interface';
+
 const activitySchema = new mongoose.Schema(
 	{
 		activityId: {
@@ -56,5 +58,5 @@ activitySchema.virtual('duty', {
 	justOne: true
 });
 
-const Activity = mongoose.model('Activity', activitySchema);
+const Activity = mongoose.model<IActivity>('Activity', activitySchema);
 export default Activity;

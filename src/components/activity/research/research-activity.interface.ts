@@ -9,6 +9,7 @@ export interface IResearchActivity extends IActivity {
 	dates?: Date[];
 	details?: string;
 	evidence?: string;
+	workload?: IResearchWorkload;
 }
 
 export interface IResearchWorkload {

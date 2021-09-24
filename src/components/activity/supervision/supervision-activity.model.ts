@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-floating-promises */
+import { ISupervisionActivity, ISupervisionWorkload } from 'components';
 import mongoose from 'mongoose';
 import Activity from '../activity.model';
 import SupervisionActivityController from './supervision-activity.controller';
-import { ISupervisionActivity, ISupervisionWorkload } from './supervision-activity.interface';
 
 const supervisionActivitySchema = new mongoose.Schema(
 	{
@@ -58,5 +59,8 @@ supervisionActivitySchema.virtual('student', {
 	justOne: true
 });
 
-const SupervisionActivity = Activity.discriminator('SupervisionActivity', supervisionActivitySchema);
+const SupervisionActivity = Activity.discriminator<ISupervisionActivity>(
+	'SupervisionActivity',
+	supervisionActivitySchema
+);
 export default SupervisionActivity;

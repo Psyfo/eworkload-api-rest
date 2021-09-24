@@ -3,14 +3,14 @@
 		"target": "ESNext",
 		"module": "commonjs",
 		"moduleResolution": "node",
-		"baseUrl": "./src",
+		"baseUrl": ".",
 		"paths": {
-			"src/*": ["src/*"],
-			"auth/*": ["src/auth/*"],
-			"components/*": ["src/components/*"],
-			"config/*": ["src/config/*"],
-			"middleware/*": ["src/middleware/*"],
-			"routes/*": ["src/routes/*"]
+			"src/*": ["./src/*"],
+			"auth/*": ["./src/auth/*"],
+			"components/*": ["./src/components/*"],
+			"config/*": ["./src/config/*"],
+			"middleware/*": ["./src/middleware/*"],
+			"routes/*": ["./src/routes/*"]
 		},
 		"outDir": "./dist",
 		"strict": true,

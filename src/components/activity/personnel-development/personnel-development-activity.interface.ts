@@ -6,4 +6,11 @@ export interface IPersonnelDevelopmentActivity extends IActivity {
 	date: Date;
 	duration: string;
 	evidence?: string;
+	workload?: IPersonnelDevelopmentWorkload;
+}
+
+export interface IPersonnelDevelopmentWorkload {
+	total?: number;
+	percentageOfTeaching?: number;
+	percentageOfAnnual?: number;
 }

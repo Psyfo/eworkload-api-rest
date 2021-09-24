@@ -16,8 +16,10 @@ class BlockController {
 			}
 
 			return res.status(200).json(result);
-		} catch (error) {
-			logger.error(error.message);
+		} catch (error: unknown) {
+			if (error instanceof Error) {
+				logger.error(error.message);
+			}
 			return res.status(500).json({ message: 'Server Error' });
 		}
 	};
@@ -29,8 +31,10 @@ class BlockController {
 			}
 
 			return res.status(200).json(result);
-		} catch (error) {
-			logger.error(error.message);
+		} catch (error: unknown) {
+			if (error instanceof Error) {
+				logger.error(error.message);
+			}
 			return res.status(500).json({ message: 'Server Error' });
 		}
 	};
@@ -42,8 +46,10 @@ class BlockController {
 			}
 
 			return res.status(200).json(result);
-		} catch (error) {
-			logger.error(error.message);
+		} catch (error: unknown) {
+			if (error instanceof Error) {
+				logger.error(error.message);
+			}
 			return res.status(500).json({ message: 'Server Error' });
 		}
 	};
@@ -54,8 +60,10 @@ class BlockController {
 			const result = await Block.findOne({ _id: newBlock._id });
 			logger.info('Object created');
 			return res.status(200).json(result);
-		} catch (error) {
-			logger.error(error.message);
+		} catch (error: unknown) {
+			if (error instanceof Error) {
+				logger.error(error.message);
+			}
 			return res.status(500).json({ message: 'Server Error' });
 		}
 	};
@@ -73,8 +81,10 @@ class BlockController {
 			}
 			logger.info('Object updated');
 			return res.status(200).json(result);
-		} catch (error) {
-			logger.error(error.message);
+		} catch (error: unknown) {
+			if (error instanceof Error) {
+				logger.error(error.message);
+			}
 			return res.status(500).json({ message: 'Server Error' });
 		}
 	};
@@ -87,8 +97,10 @@ class BlockController {
 			logger.info('Object deleted');
 			0;
 			return res.status(200).json(result);
-		} catch (error) {
-			logger.error(error.message);
+		} catch (error: unknown) {
+			if (error instanceof Error) {
+				logger.error(error.message);
+			}
 			return res.status(500).json({ message: 'Server Error' });
 		}
 	};

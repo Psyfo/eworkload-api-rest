@@ -2,9 +2,9 @@ import { IGroup } from '../../group/group.interface';
 import { IActivity } from '../activity.interface';
 
 export interface IFormalInstructionActivity extends IActivity {
-	groupId: string;
-	group: IGroup;
-	workload: IFormalInstructionWorkload;
+	groupId?: string;
+	group?: IGroup;
+	workload?: IFormalInstructionWorkload;
 }
 
 export interface IFormalInstructionWorkload {

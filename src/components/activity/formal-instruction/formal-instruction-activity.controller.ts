@@ -33,8 +33,10 @@ class FormalInstructionActivityController {
 				return res.status(400).json({ message: 'No result found' });
 			}
 			return res.status(200).json(result);
-		} catch (error) {
-			logger.error(error.message);
+		} catch (error: unknown) {
+			if (error instanceof Error) {
+				logger.error(error.message);
+			}
 			return res.status(500).json({ message: 'Server Error' });
 		}
 	};
@@ -63,8 +65,10 @@ class FormalInstructionActivityController {
 				return res.status(400).json({ message: 'No result found' });
 			}
 			return res.status(200).json(result);
-		} catch (error) {
-			logger.error(error.message);
+		} catch (error: unknown) {
+			if (error instanceof Error) {
+				logger.error(error.message);
+			}
 			return res.status(500).json({ message: 'Server Error' });
 		}
 	};
@@ -102,8 +106,10 @@ class FormalInstructionActivityController {
 			}
 
 			return res.status(200).json(result);
-		} catch (error) {
-			logger.error(error.message);
+		} catch (error: unknown) {
+			if (error instanceof Error) {
+				logger.error(error.message);
+			}
 			return res.status(500).json({ message: 'Server Error' });
 		}
 	};
@@ -141,8 +147,10 @@ class FormalInstructionActivityController {
 			logger.info('Object created');
 
 			return res.status(200).json(result);
-		} catch (error) {
-			logger.error(error.message);
+		} catch (error: unknown) {
+			if (error instanceof Error) {
+				logger.error(error.message);
+			}
 			return res.status(500).json({ message: 'Server Error' });
 		}
 	};
@@ -186,8 +194,10 @@ class FormalInstructionActivityController {
 			//await this.calcWorkload(result._id);
 			logger.info('Object updated');
 			return res.status(200).json(result);
-		} catch (error) {
-			logger.error(error.message);
+		} catch (error: unknown) {
+			if (error instanceof Error) {
+				logger.error(error.message);
+			}
 			return res.status(500).json({ message: 'Server Error' });
 		}
 	};
@@ -211,8 +221,10 @@ class FormalInstructionActivityController {
 			}
 			logger.info('Object deleted');
 			return res.status(200).json(result);
-		} catch (error) {
-			logger.error(error.message);
+		} catch (error: unknown) {
+			if (error instanceof Error) {
+				logger.error(error.message);
+			}
 			return res.status(500).json({ message: 'Server Error' });
 		}
 	};
@@ -224,7 +236,7 @@ class FormalInstructionActivityController {
 			} else {
 				return 0;
 			}
-		} catch (error) {
+		} catch (error: any) {
 			logger.error(error.message);
 			return 0;
 		}
@@ -241,8 +253,10 @@ class FormalInstructionActivityController {
 			} else {
 				return 0;
 			}
-		} catch (error) {
-			logger.error(error.message);
+		} catch (error: unknown) {
+			if (error instanceof Error) {
+				logger.error(error.message);
+			}
 			return 0;
 		}
 	};
@@ -257,8 +271,10 @@ class FormalInstructionActivityController {
 			} else {
 				return 0;
 			}
-		} catch (error) {
-			logger.error(error.message);
+		} catch (error: unknown) {
+			if (error instanceof Error) {
+				logger.error(error.message);
+			}
 			return 0;
 		}
 	};
@@ -272,8 +288,10 @@ class FormalInstructionActivityController {
 			} else {
 				return 0;
 			}
-		} catch (error) {
-			logger.error(error.message);
+		} catch (error: unknown) {
+			if (error instanceof Error) {
+				logger.error(error.message);
+			}
 			return 0;
 		}
 	};
@@ -288,8 +306,10 @@ class FormalInstructionActivityController {
 			} else {
 				return 0;
 			}
-		} catch (error) {
-			logger.error(error.message);
+		} catch (error: unknown) {
+			if (error instanceof Error) {
+				logger.error(error.message);
+			}
 			return 0;
 		}
 	};
@@ -307,8 +327,10 @@ class FormalInstructionActivityController {
 			} else {
 				return 0;
 			}
-		} catch (error) {
-			logger.error(error);
+		} catch (error: unknown) {
+			if (error instanceof Error) {
+				logger.error(error.message);
+			}
 			return 0;
 		}
 	};
@@ -324,8 +346,10 @@ class FormalInstructionActivityController {
 			} else {
 				return 0;
 			}
-		} catch (error) {
-			logger.error(error.message);
+		} catch (error: unknown) {
+			if (error instanceof Error) {
+				logger.error(error.message);
+			}
 			return 0;
 		}
 	};
@@ -341,8 +365,10 @@ class FormalInstructionActivityController {
 			} else {
 				return 0;
 			}
-		} catch (error) {
-			logger.error(error.message);
+		} catch (error: unknown) {
+			if (error instanceof Error) {
+				logger.error(error.message);
+			}
 			return 0;
 		}
 	};
@@ -358,8 +384,10 @@ class FormalInstructionActivityController {
 			} else {
 				return 0;
 			}
-		} catch (error) {
-			logger.error(error.message);
+		} catch (error: unknown) {
+			if (error instanceof Error) {
+				logger.error(error.message);
+			}
 			return 0;
 		}
 	};
@@ -370,8 +398,10 @@ class FormalInstructionActivityController {
 			} else {
 				return 0;
 			}
-		} catch (error) {
-			logger.error(error.message);
+		} catch (error: unknown) {
+			if (error instanceof Error) {
+				logger.error(error.message);
+			}
 			return 0;
 		}
 	};
@@ -392,8 +422,10 @@ class FormalInstructionActivityController {
 				logger.error('otherHours: Activity is undefined');
 				return 0;
 			}
-		} catch (error) {
-			logger.error(error.message);
+		} catch (error: unknown) {
+			if (error instanceof Error) {
+				logger.error(error.message);
+			}
 			return 0;
 		}
 	};
@@ -407,8 +439,10 @@ class FormalInstructionActivityController {
 			} else {
 				return 0;
 			}
-		} catch (error) {
-			logger.error(error.message);
+		} catch (error: unknown) {
+			if (error instanceof Error) {
+				logger.error(error.message);
+			}
 			return 0;
 		}
 	};
@@ -423,8 +457,10 @@ class FormalInstructionActivityController {
 			} else {
 				return 0;
 			}
-		} catch (error) {
-			logger.error(error.message);
+		} catch (error: unknown) {
+			if (error instanceof Error) {
+				logger.error(error.message);
+			}
 			return 0;
 		}
 	};
@@ -438,8 +474,10 @@ class FormalInstructionActivityController {
 			} else {
 				return 0;
 			}
-		} catch (error) {
-			logger.error(error.message);
+		} catch (error: unknown) {
+			if (error instanceof Error) {
+				logger.error(error.message);
+			}
 			return 0;
 		}
 	};
@@ -463,9 +501,11 @@ class FormalInstructionActivityController {
 			};
 
 			return workload;
-		} catch (error) {
-			logger.error(error.message);
-			throw new Error(error);
+		} catch (error: unknown) {
+			if (error instanceof Error) {
+				logger.error(error.message);
+			}
+			throw new Error('Error compiling workload');
 		}
 	};
 }

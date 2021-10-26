@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import express from 'express';
-
 import AcademicAdministrationActivityController from './academic-administration-activity.controller';
 
 const router = express.Router();

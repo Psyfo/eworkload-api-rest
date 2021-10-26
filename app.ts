@@ -4,9 +4,8 @@ import express from 'express';
 import { createServer } from 'http';
 import mongoose from 'mongoose';
 import path from 'path';
-
 import * as authRouter from './src/auth/auth.routes';
-import * as aaRouter from './src/components/activity/academic-administration/academic-adminitration-activity.route';
+import * as aaRouter from './src/components/activity/academic-administration/academic-administration-activity.route';
 import * as ciRouter from './src/components/activity/community-instruction/community-instruction-activity.route';
 import * as fiRouter from './src/components/activity/formal-instruction/formal-instruction-activity.route';
 import * as pdRouter from './src/components/activity/personnel-development/personnel-development-activity.route';
@@ -91,6 +90,7 @@ app.use('/public-service-activities', psRouter.default);
 app.use('/research-activities', rRouter.default);
 app.use('/supervision-activities', sRouter.default);
 app.use('/work-focuses', workFocusRouter.default);
+app.use('/workload', workloadRouter.default);
 
 app.use(ErrorMiddleware.errorHandler);
 

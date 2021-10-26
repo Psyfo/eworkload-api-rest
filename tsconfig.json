@@ -4,22 +4,14 @@
 		"module": "commonjs",
 		"moduleResolution": "node",
 		"baseUrl": ".",
-		"paths": {
-			"src/*": ["./src/*"],
-			"auth/*": ["./src/auth/*"],
-			"components/*": ["./src/components/*"],
-			"config/*": ["./src/config/*"],
-			"middleware/*": ["./src/middleware/*"],
-			"routes/*": ["./src/routes/*"]
-		},
 		"outDir": "./dist",
 		"strict": true,
 		"esModuleInterop": true,
 		"inlineSourceMap": true,
 		"strictNullChecks": true,
-		"noImplicitAny": true,
+		// "noImplicitAny": true,
 		"lib": ["ESNext"]
 	},
-	"include": ["**/*"],
-	"exclude": ["node_modules"]
+	"include": ["src"],
+	"exclude": ["node_modules", "**/.*/"]
 }

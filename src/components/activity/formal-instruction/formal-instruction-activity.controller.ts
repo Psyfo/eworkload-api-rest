@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-inferrable-types */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
@@ -230,8 +231,8 @@ class FormalInstructionActivityController {
 	};
 	static baseContact = (activity: IFormalInstructionActivity): number => {
 		try {
-			if (activity != undefined) {
-				let result: number = (activity?.group?.modules[0]?.credits / 4) * activity?.group?.modules[0]?.block?.weeks;
+			if (activity.group) {
+				const result: number = (activity?.group?.modules[0]?.credits / 4) * activity?.group?.modules[0]?.block?.weeks;
 				return result;
 			} else {
 				return 0;
@@ -243,7 +244,7 @@ class FormalInstructionActivityController {
 	};
 	static coordination = (activity: IFormalInstructionActivity): number => {
 		try {
-			if (activity != undefined) {
+			if (activity) {
 				let coordination: number = 0;
 				if (activity.userId === activity?.group?.coordinatorId) {
 					coordination = 5;
@@ -262,11 +263,11 @@ class FormalInstructionActivityController {
 	};
 	static studentSupport = (activity: IFormalInstructionActivity): number => {
 		try {
-			if (activity != undefined) {
+			if (activity.group) {
 				return (
-					(0.1 * activity.group.studentsEnrolled * activity.group.modules[0].credits) /
-					activity.group.modules[0].block.weeks /
-					activity.group.modularity
+					(0.1 * activity?.group?.studentsEnrolled * activity.group.modules[0].credits) /
+					activity?.group?.modules[0].block.weeks /
+					activity?.group?.modularity
 				);
 			} else {
 				return 0;
@@ -280,7 +281,7 @@ class FormalInstructionActivityController {
 	};
 	static preparationTime = (activity: IFormalInstructionActivity): number => {
 		try {
-			if (activity != undefined) {
+			if (activity.group) {
 				return +(
 					(FormalInstructionActivityController.baseContact(activity) * (activity.group.modules[0].nqfLevel - 4)) /
 					activity.group.modularity
@@ -297,7 +298,7 @@ class FormalInstructionActivityController {
 	};
 	static assessmentSetting = (activity: IFormalInstructionActivity): number => {
 		try {
-			if (activity != undefined) {
+			if (activity.group) {
 				return +(
 					(((10 * activity.group.modules[0].credits) / activity.group.modules[0].block.weeks) *
 						(activity.group.modules[0].nqfLevel - 4)) /
@@ -315,7 +316,7 @@ class FormalInstructionActivityController {
 	};
 	static examMarking = (activity: IFormalInstructionActivity): number => {
 		try {
-			if (activity != undefined) {
+			if (activity.group) {
 				return +(
 					(0.25 *
 						activity.group.studentsEnrolled *
@@ -334,9 +335,9 @@ class FormalInstructionActivityController {
 			return 0;
 		}
 	};
-	static courseworkMarking = (activity: IFormalInstructionActivity) => {
+	static courseworkMarking = (activity: IFormalInstructionActivity): number => {
 		try {
-			if (activity != undefined) {
+			if (activity.group) {
 				return +(
 					(0.5 *
 						activity.group.studentsEnrolled *
@@ -355,7 +356,7 @@ class FormalInstructionActivityController {
 	};
 	static feedback = (activity: IFormalInstructionActivity): number => {
 		try {
-			if (activity != undefined) {
+			if (activity.group) {
 				return +(
 					(1 *
 						activity?.group?.studentsEnrolled *
@@ -374,7 +375,7 @@ class FormalInstructionActivityController {
 	};
 	static formativeAssessment = (activity: IFormalInstructionActivity): number => {
 		try {
-			if (activity != undefined) {
+			if (activity.group) {
 				return +(
 					(0.4 *
 						activity.group.studentsEnrolled *
@@ -393,7 +394,7 @@ class FormalInstructionActivityController {
 	};
 	static moderation = (activity: IFormalInstructionActivity): number => {
 		try {
-			if (activity != undefined) {
+			if (activity) {
 				return 0;
 			} else {
 				return 0;
@@ -431,7 +432,7 @@ class FormalInstructionActivityController {
 	};
 	static totalHours = (activity: IFormalInstructionActivity): number => {
 		try {
-			if (activity != undefined) {
+			if (activity) {
 				return +(
 					FormalInstructionActivityController.baseContact(activity) +
 					FormalInstructionActivityController.otherHours(activity)
@@ -448,7 +449,7 @@ class FormalInstructionActivityController {
 	};
 	static percentageOfTeaching = async (activity: IFormalInstructionActivity): Promise<number> => {
 		try {
-			if (activity != undefined) {
+			if (activity) {
 				return +(
 					(FormalInstructionActivityController.totalHours(activity) /
 						(await WorkFocusController.teachingHours(activity.userId))) *
@@ -457,20 +458,17 @@ class FormalInstructionActivityController {
 			} else {
 				return 0;
 			}
-		} catch (error: unknown) {
+		} catch (error) {
 			if (error instanceof Error) {
 				logger.error(error.message);
 			}
 			return 0;
 		}
 	};
-	static percentageOfAnnual = async (activity: IFormalInstructionActivity): Promise<number> => {
+	static percentageOfAnnual = (activity: IFormalInstructionActivity): number => {
 		try {
-			if (activity != undefined) {
-				return +(
-					(FormalInstructionActivityController.totalHours(activity) / (await WorkFocusController.annualHours())) *
-					100
-				);
+			if (activity) {
+				return +((FormalInstructionActivityController.totalHours(activity) / WorkFocusController.annualHours()) * 100);
 			} else {
 				return 0;
 			}
@@ -497,7 +495,7 @@ class FormalInstructionActivityController {
 				other: FormalInstructionActivityController.otherHours(activity),
 				total: FormalInstructionActivityController.totalHours(activity),
 				percentageOfTeaching: await FormalInstructionActivityController.percentageOfTeaching(activity),
-				percentageOfAnnual: await FormalInstructionActivityController.percentageOfAnnual(activity)
+				percentageOfAnnual: FormalInstructionActivityController.percentageOfAnnual(activity)
 			};
 
 			return workload;

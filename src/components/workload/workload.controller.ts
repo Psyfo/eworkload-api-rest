@@ -1,24 +1,30 @@
-import {
-	IAcademicAdministrationActivity,
-	ICommunityInstructionActivity,
-	IExecutiveManagementActivity,
-	IFormalInstructionActivity,
-	IPersonnelDevelopmentActivity,
-	IPublicServiceActivity,
-	IResearchActivity,
-	ISupervisionActivity
-} from 'components';
 import { Request, Response } from 'express';
 import mongoose from 'mongoose';
-
+import { IExecutiveManagementActivity } from 'src';
 import { logger } from '../../config/logger.config';
+import { IAcademicAdministrationActivity } from '../activity/academic-administration/academic-administration-activity.interface';
 import AcademicAdministrationActivity from '../activity/academic-administration/academic-administration-activity.model';
+import { ICommunityInstructionActivity } from '../activity/community-instruction/community-instruction-activity.interface';
 import CommunityInstructionActivity from '../activity/community-instruction/community-instruction-activity.model';
 import ExecutiveManagementActivity from '../activity/executive-management/executive-management-activity.model';
+import { IFormalInstructionActivity } from '../activity/formal-instruction/formal-instruction-activity.interface';
 import FormalInstructionActivity from '../activity/formal-instruction/formal-instruction-activity.model';
+import { IPersonnelDevelopmentActivity } from '../activity/personnel-development/personnel-development-activity.interface';
+import PersonnelDevelopmentActivity from '../activity/personnel-development/personnel-development-activity.model';
+import { IPublicServiceActivity } from '../activity/public-service/public-service-activity.interface';
 import PublicServiceActivity from '../activity/public-service/public-service-activity.model';
+import { IResearchActivity } from '../activity/research/research-activity.interface';
+import ResearchActivity from '../activity/research/research-activity.model';
+import SupervisionActivity from '../activity/supervision/supervision-activity.model';
+import User from '../user/user.model';
+import WorkFocusController from '../work-focus/work-focus.controller';
+import { ISupervisionActivity } from './../activity/supervision/supervision-activity.interface';
 import Workload from './workload.model';
 
+/* eslint-disable prefer-const */
+/* eslint-disable @typescript-eslint/no-inferrable-types */
+/* eslint-disable prefer-const */
+/* eslint-disable @typescript-eslint/no-inferrable-types */
 /* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
@@ -156,7 +162,7 @@ class WorkloadController {
 		}
 		return hours;
 	};
-	static calcExecutiveAdministration = async (userId: string): Promise<number> => {
+	static calcExecutiveManagement = async (userId: string): Promise<number> => {
 		let hours: number = 0;
 		try {
 			const activities: IExecutiveManagementActivity[] = await ExecutiveManagementActivity.find({ userId: userId });
@@ -188,6 +194,7 @@ class WorkloadController {
 				return 0;
 			}
 		}
+		console.log('Fi Hours: ', hours);
 		return hours;
 	};
 	static calcPersonnelDevelopment = async (userId: string): Promise<number> => {
@@ -259,12 +266,89 @@ class WorkloadController {
 		}
 		return hours;
 	};
-	static teachingHours = (): void => {};
-	static serviceHours = (): void => {};
-	static researchHours = (): void => {};
-	static initializeWorkloads = (): void => {};
+	static calcTeachingHours = (): void => {};
+	static calcServiceHours = (): void => {};
+	static calcResearchHours = (): void => {};
+	static initializeWorkload = async (userId: string): Promise<void> => {
+		try {
+			// check if exists
+			const result = await Workload.findOne({ userId: userId });
+			if (!result) {
+				const newWorkload = new Workload({ userId: userId });
+				await newWorkload.save();
+				logger.info('Workload initiated');
+			}
+			logger.info('Workload exists');
+		} catch (error) {
+			if (error instanceof Error) {
+				logger.error(error.message);
+			}
+		}
+	};
+	static initializeWorkloads = async (): Promise<void> => {
+		try {
+			const users = await User.find();
+			for (let user of users) {
+				await WorkloadController.initializeWorkload(user.userId);
+			}
+		} catch (error) {
+			if (error instanceof Error) {
+				logger.error(error.message);
+			}
+		}
+	};
 	static deleteWorkloads = (): void => {};
-	static totalWorkload = (): void => {};
+	static calcTotalWorkload = async (userId: string): Promise<void> => {
+		try {
+			// check if workload exist or needs to initialize
+			await WorkloadController.initializeWorkload(userId);
+
+			const annual: number = WorkFocusController.annualHours();
+			const aa: number = await WorkloadController.calcAcademicAdministration(userId);
+			const ci: number = await WorkloadController.calcCommunityInstruction(userId);
+			const em: number = await WorkloadController.calcExecutiveManagement(userId);
+			const fi: number = await WorkloadController.calcFormalInstruction(userId);
+			const pd: number = await WorkloadController.calcPersonnelDevelopment(userId);
+			const ps: number = await WorkloadController.calcPublicService(userId);
+			const r: number = await WorkloadController.calcResearch(userId);
+			const s: number = await WorkloadController.calcSupervision(userId);
+
+			const workload = {
+				academicAdministrationWorkload: { total: aa, percentageOfAnnual: (aa / annual) * 100 },
+				communityInstructionWorkload: { total: ci, percentageOfAnnual: (ci / annual) * 100 },
+				executiveManagementWorkload: { total: em, percentageOfAnnual: (em / annual) * 100 },
+				formalInstructionWorkload: { total: fi, percentageOfAnnual: (fi / annual) * 100 },
+				personnelDevelopmentWorkload: { total: pd, percentageOfAnnual: (pd / annual) * 100 },
+				publicServiceWorkload: { total: ps, percentageOfAnnual: (ps / annual) * 100 },
+				researchWorkload: { total: r, percentageOfAnnual: (r / annual) * 100 },
+				supervisionWorkload: { total: s, percentageOfAnnual: (s / annual) * 100 }
+			};
+			const result = await Workload.findOneAndUpdate(
+				{ userId: userId },
+				{
+					$set: workload
+				},
+				{ upsert: true }
+			);
+			console.log('Result: ', result);
+		} catch (error) {
+			if (error instanceof Error) {
+				logger.error(error.message);
+			}
+		}
+	};
+	static calcTotalWorkloads = async (): Promise<void> => {
+		try {
+			const users = await User.find();
+			for (let user of users) {
+				await WorkloadController.calcTotalWorkload(user.userId);
+			}
+		} catch (error) {
+			if (error instanceof Error) {
+				logger.error(error.message);
+			}
+		}
+	};
 	static workloadSummaries = (): void => {};
 	static calculateTotalWorkload = (): void => {};
 }

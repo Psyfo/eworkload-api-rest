@@ -2,6 +2,5 @@
 export * from './academic-administration-activity.controller';
 export * from './academic-administration-activity.interface';
 export * from './academic-administration-activity.model';
-export * from './academic-adminitration-activity.route';
+export * from './academic-administration-activity.route';
 // end:ng42.barrel
-

@@ -1,4 +1,5 @@
 import { model, Schema } from 'mongoose';
+import { IWorkload } from './workload.interface';
 
 const workloadSchema = new Schema(
 	{
@@ -9,10 +10,6 @@ const workloadSchema = new Schema(
 		year: {
 			type: String,
 			default: new Date().getFullYear()
-		},
-		workFocusName: {
-			type: String,
-			ref: 'WorkFocus'
 		},
 		academicAdministrationWorkload: {
 			total: {
@@ -45,8 +42,14 @@ const workloadSchema = new Schema(
 			}
 		},
 		formalInstructionWorkload: {
-			type: Number,
-			default: 0
+			total: {
+				type: Number,
+				default: 0
+			},
+			percentageOfAnnual: {
+				type: Number,
+				default: 0
+			}
 		},
 		personnelDevelopmentWorkload: {
 			total: {
@@ -117,5 +120,5 @@ workloadSchema.virtual('work-focus', {
 	justOne: true
 });
 
-const Workload = model('Workload', workloadSchema);
+const Workload = model<IWorkload>('Workload', workloadSchema);
 export default Workload;

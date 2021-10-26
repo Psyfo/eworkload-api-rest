@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Request, Response } from 'express';
+import { Error } from 'mongoose';
 import { logger } from '../../config/logger.config';
 import parameters from '../../config/parameters.config';
 import { IUser } from '../user/user.interface';
@@ -41,7 +43,9 @@ class WorkFocusController {
 			}
 			return res.status(200).json(result);
 		} catch (error) {
-			logger.error(error.message);
+			if (error instanceof Error) {
+				logger.error(error.message);
+			}
 			return res.status(500).send('Server Error');
 		}
 	};
@@ -53,7 +57,9 @@ class WorkFocusController {
 			}
 			return res.status(200).json(result);
 		} catch (error) {
-			logger.error(error.message);
+			if (error instanceof Error) {
+				logger.error(error.message);
+			}
 			return res.status(500).send('Server Error');
 		}
 	};
@@ -65,7 +71,9 @@ class WorkFocusController {
 			}
 			return res.status(200).json(result);
 		} catch (error) {
-			logger.error(error.message);
+			if (error instanceof Error) {
+				logger.error(error.message);
+			}
 			return res.status(500).send('Server Error');
 		}
 	};
@@ -75,7 +83,9 @@ class WorkFocusController {
 			const result = await WorkFocus.findOne({ _id: newWorkFocus._id });
 			return res.status(200).json(result);
 		} catch (error) {
-			logger.error(error.message);
+			if (error instanceof Error) {
+				logger.error(error.message);
+			}
 			return res.status(500).send('Server Error');
 		}
 	};
@@ -84,7 +94,9 @@ class WorkFocusController {
 			const result = await WorkFocus.findOneAndUpdate({ _id: req.body._id }, { $set: req.body }, { upsert: true });
 			return res.status(200).json(result);
 		} catch (error) {
-			logger.error(error.message);
+			if (error instanceof Error) {
+				logger.error(error.message);
+			}
 			return res.status(500).send('Server Error');
 		}
 	};
@@ -93,7 +105,9 @@ class WorkFocusController {
 			const result = await WorkFocus.findOneAndRemove({ _id: req.body._id });
 			return res.status(200).json(result);
 		} catch (error) {
-			logger.error(error.message);
+			if (error instanceof Error) {
+				logger.error(error.message);
+			}
 			return res.status(500).send('Server Error');
 		}
 	};

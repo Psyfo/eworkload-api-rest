@@ -35,9 +35,9 @@ const personnelDevelopmentActivitySchema = new mongoose.Schema(
 // VIRTUALS
 
 // HOOKS
-personnelDevelopmentActivitySchema.post('save', async function () {});
-personnelDevelopmentActivitySchema.post('findOneAndUpdate', async function (doc) {});
-personnelDevelopmentActivitySchema.post('findOneAndRemove', async function (doc) {});
+// personnelDevelopmentActivitySchema.post('save', async function () {});
+// personnelDevelopmentActivitySchema.post('findOneAndUpdate', async function (doc) {});
+// personnelDevelopmentActivitySchema.post('findOneAndRemove', async function (doc) {});
 
 const PersonnelDevelopmentActivity = Activity.discriminator<IPersonnelDevelopmentActivity>(
 	'PersonnelDevelopmentActivity',

@@ -1,4 +1,3 @@
-import { Document } from 'mongoose';
 import { IActivity } from '../activity.interface';
 
 export interface IPersonnelDevelopmentActivity extends IActivity {
